@@ -1,1 +1,1 @@
-yyhuhumuh
+print("hello")
