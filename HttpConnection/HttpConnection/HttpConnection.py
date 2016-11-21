@@ -12,7 +12,7 @@ responce = connect.getresponse()
 #this will return the entire content
 data1 = responce.read()
 #_____________________________________________________________
-
+print("heelo")
 
 
 
