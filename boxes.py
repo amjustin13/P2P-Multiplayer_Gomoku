@@ -31,7 +31,6 @@ class GomokuGame():
     def drawBoard(self):
         for x in range(19):
             for y in range(19):
-                if not self.board[y][x]:
                     self.screen.blit(self.bluesquare, [(x)*30, (y)*30+5])
     def drawHUD(self):
         #draw the background for the bottom and draw text:
@@ -71,6 +70,16 @@ class GomokuGame():
             #quit if the quit button was pressed
             if event.type == pygame.QUIT:
                 exit()
+
+        #get mouse position
+        mouse = pygame.mouse.get_pos()
+
+        #get x and y positions -- will output from(x,y):  (0,0) --> (18,18)
+        xpos = int(math.ceil((mouse[0]-32)/30.0))
+        ypos = int(math.ceil((mouse[1]-32)/30.0))
+
+        if pygame.mouse.get_pressed()[0]:
+            self.screen.blit(self.orangecircle, [(xpos)*30, (ypos)*30+5])
 
         #update the screen
         pygame.display.flip()
