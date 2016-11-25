@@ -1,8 +1,8 @@
 import http.client
-import requests
+#import requests
 
 #create a connection
-conn = http.client.HTTPConnection("127.0.0.1",80)
+conn = http.client.HTTPConnection("192.168.0.24",6000)
 
 def Send_get_resp():
     cmd = input("input command (ex. GET index.txt): ")
