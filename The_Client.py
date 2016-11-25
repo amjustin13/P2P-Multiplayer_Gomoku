@@ -2,7 +2,7 @@ import http.client
 #import requests
 
 #create a connection
-conn = http.client.HTTPConnection("192.168.0.24",6000)
+conn = http.client.HTTPConnection("192.168.0.4",6000)#192.168.0.4:6000
 
 def Send_get_resp():
     cmd = input("input command (ex. GET index.txt): ")

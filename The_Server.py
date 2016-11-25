@@ -1,11 +1,14 @@
 from http.server import BaseHTTPRequestHandler,HTTPServer
 import os
 
+#global user_name
 class ClientHandler(BaseHTTPRequestHandler):
+    user_name = input("Please enter your username: ")#your computer name
+
     #handle a GET request
     def do_GET(self):
         #file location
-        rootdir = 'C:/Users/marqk/Desktop/'
+        rootdir = 'C:/Users/'+self.user_name+'/Desktop/'
         try:
             if self.path.endswith('.txt'):
                 f = open(rootdir + self.path)#opens the requested file
@@ -25,7 +28,7 @@ class ClientHandler(BaseHTTPRequestHandler):
 
     #Handle a POST request
     def do_POST(self):
-        rootdir = 'C:/Users/marqk/Desktop/'
+        rootdir = 'C:/Users/'+self.user_name+'/Desktop/'
         try:
             if self.path.endswith('.txt'):
                 f = open(rootdir + self.path,"a")#opens the requested file
