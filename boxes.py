@@ -5,59 +5,14 @@ import http.client
 from joi import CreateBoard
 from http.server import BaseHTTPRequestHandler,HTTPServer
 import os
-global board_array=CreateBoard()
+global board_array
 
-#_____________________________THE SERVER HANDLER_______________________________
-class ClientHandler(BaseHTTPRequestHandler):
-    user_name = input("Please enter your username: ")#your computer name
-    #handle a GET request
-    def do_GET(self):
-        #file location
-        rootdir = 'C:/Users/'+self.user_name+'/Desktop/'
-        try:
-            if self.path.endswith('.txt'):
-                f = open(rootdir + self.path)#opens the requested file
+board_array = CreateBoard()
 
-                #packing the header files together
-                self.send_response(200)#ok
-                #specify the type you are handling
-                self.send_header("Content-type", "text/txt")
-                self.end_headers()
 
-                #send the file contents to client
-                self.wfile.write(bytes(f.readline(),"utf-8"))
-                f.close()
-                return
-        except IOError:
-            self.send_error(404,'file not found')
 
-    #Handle a POST request
-    def do_POST(self):
-        rootdir = 'C:/Users/'+self.user_name+'/Desktop/
-        try:
-            if self.path.endswith('.txt'):
-                with open(rootdir + self.path,"w") as f:
-                    f.writeline()
-                f.close()
-                #packing the header files together
-                self.send_response(200)#ok
-                #specify the type you are handling
-                self.send_header("Content-type", "text/txt")
-                self.end_headers()
-                return
-        except IOError:
-            self.send_error(404,'file not found')
 
-#___________________________THE SERVER____________________________________
-#this is how you create and run the server
-def run(server_class = HTTPServer, handler_class = ClientHandler):
-    print("http server is starting...")
-    server_address = ('192.168.0.4',6000)#connect to this location
-    httpd = server_class(server_address,handler_class)
-    print("http is running...")
-    httpd.serve_forever()
-
-class GomokuGame():
+class GomokuGame(ClientHandler):
     def __init__(self):
         pass
 
@@ -81,9 +36,11 @@ class GomokuGame():
         self.didiwin=False
         self.running=False
 
-    def Send_get_req():
+#___________________________THE CLIENT________________________________________
+    def Send_get_req(self):
+       conn = http.client,HTTPConnection("localhost",80)
        #request command to server
-       conn.request('GET','game state.txt')
+       conn.request('GET','Hello.txt')
 
        #get response from server
        response = conn.getresponse()
@@ -95,23 +52,20 @@ class GomokuGame():
        board_array = data_recieved
        conn.close()
 
-    def Send_post_req():
-        #create a connection
-        conn = http.client.HTTPConnection("localhost",80)#192.168.0.24:6000
-
-        #request command to server
-        conn.request('POST','game state.txt')
-        #get response from server
-        response = conn.getresponse()
-
-        #print server response and data
-        print("printing response...")
-        print(int(response.status), response.reason)
-        data_recieved = response.read()
-        print(data_recieved)
-        conn.close()
-
-
+    # def Send_post_req(self):
+    #     #create a connection
+    #     conn = http.client.HTTPConnection("localhost",80)#192.168.0.24:6000
+    #
+    #     #request command to server
+    #     conn.request('POST',' ')#game state.txt
+    #     #get response from server
+    #     response = conn.getresponse()
+    #
+    #     #print server response and data
+    #     print("printing response...")
+    #     print(int(response.status), response.reason)
+    #     data_recieved = response.read()
+    #     conn.close()
 
     # --------------------------------
     # Build and update the board!
@@ -144,9 +98,10 @@ class GomokuGame():
         self.screen.blit(scoreother, (340, 635))
 
     def update(self):
+
         #sleep to make the game 60 fps
         self.clock.tick(60)
-
+        self.Send_get_req()
         #clear the screen
         self.screen.fill(0)
 
@@ -168,7 +123,6 @@ class GomokuGame():
 
         if pygame.mouse.get_pressed()[0]:
             self.screen.blit(self.orangecircle, [(xpos)*30, (ypos)*30+5])
-            Send_post_resp()
 
         #update the screen
         pygame.display.flip()
@@ -192,12 +146,8 @@ class GomokuGame():
         self.scorepanel=pygame.image.load("score_panel.png")
         self.greenindicator=pygame.image.load("greenindicator.png")
         self.redindicator=pygame.image.load("redindicator.png")
-    http.client.HTTPConnection("localhost",80)
-
 
 bg=GomokuGame() #__init__ is called right here
-if(__name__ == '__main__'):
-   run()
 
 while 1:
     bg.update()
