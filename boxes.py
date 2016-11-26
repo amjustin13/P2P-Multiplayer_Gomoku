@@ -3,16 +3,15 @@ import math
 from http.client import HTTPConnection
 import http.client
 from joi import CreateBoard
-from http.server import BaseHTTPRequestHandler,HTTPServer
-import os
+
 global board_array
+global wait
+
+wait = 0
 
 board_array = CreateBoard()
 
-
-
-
-class GomokuGame(ClientHandler):
+class GomokuGame():
     def __init__(self):
         pass
 
@@ -38,7 +37,7 @@ class GomokuGame(ClientHandler):
 
 #___________________________THE CLIENT________________________________________
     def Send_get_req(self):
-       conn = http.client,HTTPConnection("localhost",80)
+       conn = http.client.HTTPConnection("localhost",80)
        #request command to server
        conn.request('GET','Hello.txt')
 
@@ -98,10 +97,15 @@ class GomokuGame(ClientHandler):
         self.screen.blit(scoreother, (340, 635))
 
     def update(self):
-
+        global wait
         #sleep to make the game 60 fps
         self.clock.tick(60)
-        self.Send_get_req()
+        wait = wait + 1
+
+        if(wait == 30):
+            self.Send_get_req()
+            wait = 0
+
         #clear the screen
         self.screen.fill(0)
 
