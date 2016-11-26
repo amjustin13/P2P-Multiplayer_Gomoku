@@ -1,5 +1,8 @@
 import pygame
 import math
+from The_Client import Send_get_resp,Send_post_resp
+from http.client import HTTPConnection
+import http.client
 
 class GomokuGame():
     def __init__(self):
@@ -24,6 +27,8 @@ class GomokuGame():
         self.otherplayer=0
         self.didiwin=False
         self.running=False
+        with open("game state.txt","w") as file:
+            file.write(str(CreateBoard))
 
     # --------------------------------
     # Build and update the board!
@@ -80,6 +85,7 @@ class GomokuGame():
 
         if pygame.mouse.get_pressed()[0]:
             self.screen.blit(self.orangecircle, [(xpos)*30, (ypos)*30+5])
+            Send_post_resp()
 
         #update the screen
         pygame.display.flip()
@@ -103,6 +109,7 @@ class GomokuGame():
         self.scorepanel=pygame.image.load("score_panel.png")
         self.greenindicator=pygame.image.load("greenindicator.png")
         self.redindicator=pygame.image.load("redindicator.png")
+    http.client.HTTPConnection("localhost",80)
 
 bg=GomokuGame() #__init__ is called right here
 while 1:
