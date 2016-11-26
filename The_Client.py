@@ -1,37 +1,24 @@
 import http.client
-#import requests
-
-#create a connection
-conn = http.client.HTTPConnection("192.168.0.4",6000)#192.168.0.4:6000
-
 def Send_get_resp():
-    cmd = input("input command (ex. GET index.txt): ")
-    cmd = cmd.split()
+   #request command to server
+   conn.request('GET','game state.txt')
 
-    if cmd[0] == 'exit':
-        exit(0)
-    #request command to server
-    conn.request(cmd[0],cmd[1])
+   #get response from server
+   response = conn.getresponse()
 
-    #get response from server
-    response = conn.getresponse()
-
-    #print server response and data
-    print("printing response...")
-    print(int(response.status), response.reason)
-    data_recieved = response.read()
-    print(data_recieved)
-    conn.close()
+   #print server response and data
+   print("printing response...")
+   print(int(response.status), response.reason)
+   data_recieved = response.read()
+   print(data_recieved)
+   conn.close()
 
 def Send_post_resp():
-    cmd = input("input command (ex. POST filename.txt): ")
-    cmd = cmd.split()
+    #create a connection
+    conn = http.client.HTTPConnection("localhost",80)#192.168.0.24:6000
 
-    if cmd[0] == 'exit':
-        exit(0)
     #request command to server
-    conn.request(cmd[0],cmd[1])
-
+    conn.request('POST','game state.txt')
     #get response from server
     response = conn.getresponse()
 
@@ -41,12 +28,3 @@ def Send_post_resp():
     data_recieved = response.read()
     print(data_recieved)
     conn.close()
-go = True
-while(go ==True):
-    ans = input("[1] for GET [2] for POST ")
-    if(ans == '1'):
-        Send_get_resp()
-    elif(ans == '2'):
-        Send_post_resp()
-    else:
-        go = False

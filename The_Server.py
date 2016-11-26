@@ -1,10 +1,18 @@
 from http.server import BaseHTTPRequestHandler,HTTPServer
 import os
+<<<<<<< HEAD
 
 #global user_name
 class ClientHandler(BaseHTTPRequestHandler):
     user_name = input("Please enter your username: ")#your computer name
 
+=======
+from time import sleep
+#import joi
+
+class ClientHandler(BaseHTTPRequestHandler):
+    user_name = input("Please enter your username: ")#your computer name
+>>>>>>> amanda
     #handle a GET request
     def do_GET(self):
         #file location
@@ -28,12 +36,21 @@ class ClientHandler(BaseHTTPRequestHandler):
 
     #Handle a POST request
     def do_POST(self):
+<<<<<<< HEAD
         rootdir = 'C:/Users/'+self.user_name+'/Desktop/'
         try:
             if self.path.endswith('.txt'):
                 f = open(rootdir + self.path,"a")#opens the requested file
                 f.writelines("yay")
                 f.close()
+=======
+        rootdir = 'C:/Users'+self.user_name+'/Desktop/'
+        try:
+            if self.path.endswith('.txt'):
+                #f = open(rootdir + self.path,"w")#opens the requested file
+                #f.writelines("yay")
+                #f.close()
+>>>>>>> amanda
                 #packing the header files together
                 self.send_response(200)#ok
                 #specify the type you are handling
@@ -48,7 +65,11 @@ class ClientHandler(BaseHTTPRequestHandler):
 #this is how you create and run the server
 def run(server_class = HTTPServer, handler_class = ClientHandler):
     print("http server is starting...")
+<<<<<<< HEAD
     server_address = ('192.168.0.4',6000)#connect to this location
+=======
+    server_address = ('localhost',80)#connect to this location
+>>>>>>> amanda
     httpd = server_class(server_address,handler_class)
     print("http is running...")
     httpd.serve_forever()
