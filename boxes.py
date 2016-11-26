@@ -3,6 +3,8 @@ import math
 from The_Client import Send_get_resp,Send_post_resp
 from http.client import HTTPConnection
 import http.client
+from joi import CreateBoard
+
 
 class GomokuGame():
     def __init__(self):

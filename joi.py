@@ -1,5 +1,5 @@
 import sys
-import The_Client 
+import The_Client
 
 def print_board(CreateBoard):
     for row in CreateBoard:
@@ -24,7 +24,7 @@ def player1(CreateBoard):
         with open("game state.txt","w") as file:
             file.write(str(CreateBoard))
         send_post_resp()
-        
+
     else:
         print("You cannot go there")
         turn = 0
@@ -33,7 +33,7 @@ def player1(CreateBoard):
 def player2(CreateBoard):
     print("player2")
     row_num,col_num = get_input()
-    
+
     if(CreateBoard[row_num][col_num] != '%' and CreateBoard[row_num][col_num] != '*'):
         CreateBoard[row_num][col_num] = '%'
         print_board(CreateBoard)
@@ -45,18 +45,8 @@ def player2(CreateBoard):
         turn = 1
     return turn
 
-def main():
-    turn = 0
-    #Easiest Way to Create Board
-    CreateBoard = []
+def CreateBoard():
+    CreateBoardArr = []
     for x in range(0,18):
-        CreateBoard.append(['O'] * 19)
-    print_board(CreateBoard)
-
-    while True:
-        if(turn == 0):
-           turn = player1(CreateBoard)
-        else:
-           turn = player2(CreateBoard)
-
-main()
+        CreateBoardArr.append(['O'] * 19)
+    return CreateBoardArr
