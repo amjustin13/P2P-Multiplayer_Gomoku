@@ -67,10 +67,12 @@ class GomokuGame(ClientHandler):
     def Send_get_req(self):
        conn = http.client.HTTPConnection("149.162.139.182",6000)
        #request command to server
-       conn.request("GET","game state.txt")
+       conn.request("GET","he.txt")
 
        #get response from server
        response = conn.getresponse()
+       print("this is message",response.msg)
+       self.otherplayer = response.msg
        print("this is all of response: ",response)
        #print server response and data
        print("printing response...")
@@ -82,10 +84,12 @@ class GomokuGame(ClientHandler):
     def Send_post_req(self):
         conn = http.client.HTTPConnection("149.162.139.182",6000)
         #request command to server
-        conn.request("POST","he.txt", "gomoku")
+        conn.request("POST","he.txt")
 
         #get response from server
         response = conn.getresponse()
+        print("this is message",response.msg)
+        self.otherplayer = response.msg
         print("this is all of response: ",response)
         #print server response and data
         print("printing response...")

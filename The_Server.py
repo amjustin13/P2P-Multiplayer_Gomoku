@@ -1,18 +1,19 @@
 from http.server import BaseHTTPRequestHandler,HTTPServer
 import os
+from boxes import GomokuGame
 
-class ClientHandler(BaseHTTPRequestHandler):
+class ClientHandler(BaseHTTPRequestHandler,GomokuGame):
     user_name = input("Please enter your username: ")#your computer name
     #handle a GET request
     def do_GET(self):
         #file location
         rootdir = 'C:/Users/'+self.user_name+'/Desktop/'
         try:
-            if self.path.endswith('.txt'):
+            if self.path.endswith('.txt') and GomokuGame.otherplayer == 1:
                 f = open(rootdir + self.path)#opens the requested file
 
                 #packing the header files together
-                self.send_response(200,message = 1)#ok
+                self.send_response(200,message = 0)#ok
                 #specify the type you are handling
                 self.send_header("Content-type", "text/txt")
                 self.end_headers()
@@ -22,14 +23,14 @@ class ClientHandler(BaseHTTPRequestHandler):
                 f.close()
                 return player
         except IOError:
-            self.send_error(404,'file not found')
+            self.send_error(404,'it is not your turn yet')
 
     #Handle a POST request
     def do_POST(self):
         try:
             if self.path.endswith('.txt'):
                #packing the header files together
-                self.send_response(200,message = 0)#ok
+                self.send_response(200,message = 1)#ok
                 self.end_headers()
                 return player
         except IOError:
