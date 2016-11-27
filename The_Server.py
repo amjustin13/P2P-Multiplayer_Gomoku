@@ -1,13 +1,11 @@
 from http.server import BaseHTTPRequestHandler,HTTPServer
 import os
-global player
-player = 0
 
 class ClientHandler(BaseHTTPRequestHandler):
+    player = 0
     user_name = input("Please enter your username: ")#your computer name
     #handle a GET request
     def do_GET(self):
-        global player
         player = 1
         #file location
         rootdir = 'C:/Users/'+self.user_name+'/Desktop/'
@@ -30,7 +28,6 @@ class ClientHandler(BaseHTTPRequestHandler):
 
     #Handle a POST request
     def do_POST(self):
-        global player
         player = 0#enables player to make a move
         try:
             if self.path.endswith('.txt'):
