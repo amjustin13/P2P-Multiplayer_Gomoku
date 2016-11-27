@@ -51,7 +51,7 @@ class GomokuGame(ClientHandler):
             self.board_array[row_num][col_num] = '*'
             with open("game state.txt","w") as file:
                 file.write(str(self.board_array))
-            self.Send_post_req()
+            # self.Send_post_req()
         else:
             print("You cannot go there")
 
@@ -62,7 +62,7 @@ class GomokuGame(ClientHandler):
             self.board_array[row_num][col_num] = '%'
             with open("game state.txt","w") as file:
                 file.write(str(self.board_array))
-            self.Send_post_req()
+            # self.Send_post_req()
         else:
             print("You cannot go there")
 
@@ -104,8 +104,15 @@ class GomokuGame(ClientHandler):
         for x in range(19):
             for y in range(19):
                     self.screen.blit(self.bluesquare, [(x)*30, (y)*30+5])
+    def drawPlayerBoard(self):
+        for x in range(19):
+            for y in range(19):
+                if self.board_array[y][x] == '*':
+                    self.screen.blit(self.orangecircle, [(x)*30+8, (y)*30+14])
+                elif self.board_array[y][x] == '%':
+                    self.screen.blit(self.bluecircle, [(x)*30+8, (y)*30+14])
     def drawHUD(self):
-        #draw the background for the bottom and draw text:
+        #draw the background for the bottom and draw text:ss
         self.screen.blit(self.scorepanel, [0, 580])
 
         #define fonts
@@ -148,6 +155,8 @@ class GomokuGame(ClientHandler):
         #draw the board
         self.drawBoard()
         self.drawHUD()
+        self.drawPlayerBoard()
+
 
         for event in pygame.event.get():
             #quit if the quit button was pressed
@@ -166,10 +175,8 @@ class GomokuGame(ClientHandler):
 
             if pygame.mouse.get_pressed()[0]:
                 if(self.turn == '1'):
-                    self.screen.blit(self.orangecircle, [(xpos)*30+8, (ypos)*30+14])
                     self.player1(ypos,xpos)
                 elif(self.turn == '2'):
-                    self.screen.blit(self.bluecircle, [(xpos)*30+8, (ypos)*30+14])
                     self.player2(ypos,xpos)
                 else:
                     print("no players found")
