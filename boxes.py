@@ -161,10 +161,10 @@ class GomokuGame(ClientHandler):
 
             if pygame.mouse.get_pressed()[0]:
                 if(self.turn == '1'):
-                    self.screen.blit(self.orangecircle, [(xpos)*30, (ypos)*30+5])
+                    self.screen.blit(self.orangecircle, [(xpos)*30+8, (ypos)*30+14])
                     self.player1(ypos,xpos)
                 elif(self.turn == '2'):
-                    self.screen.blit(self.bluecircle, [(xpos)*30, (ypos)*30+5])
+                    self.screen.blit(self.bluecircle, [(xpos)*30+8, (ypos)*30+14])
                     self.player2(ypos,xpos)
                 else:
                     print("no players found")
