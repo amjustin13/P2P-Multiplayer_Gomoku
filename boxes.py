@@ -37,7 +37,7 @@ class GomokuGame():
 
 #___________________________THE CLIENT________________________________________
     def Send_get_req(self):
-       conn = http.client.HTTPConnection("localhost",80)
+       conn = http.client.HTTPConnection("192.168.159.86", 2000) #IPV4 - "149.162.139.182",80
        #request command to server
        conn.request('GET','Hello.txt')
 
@@ -124,6 +124,9 @@ class GomokuGame():
         #get x and y positions -- will output from(x,y):  (0,0) --> (18,18)
         xpos = int(math.ceil((mouse[0]-32)/30.0))
         ypos = int(math.ceil((mouse[1]-32)/30.0))
+
+        print(xpos)
+        print(ypos)
 
         if pygame.mouse.get_pressed()[0]:
             self.screen.blit(self.orangecircle, [(xpos)*30, (ypos)*30+5])
