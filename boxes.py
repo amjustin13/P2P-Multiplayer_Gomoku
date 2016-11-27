@@ -3,6 +3,7 @@ import math
 from http.client import HTTPConnection
 import http.client
 from joi import CreateBoard
+from The_Server import ClientHandler
 
 global board_array
 global wait
@@ -11,7 +12,7 @@ wait = 0
 
 board_array = CreateBoard()
 
-class GomokuGame():
+class GomokuGame(ClientHandler):
     def __init__(self):
         pass
 
@@ -28,18 +29,42 @@ class GomokuGame():
         self.board = [[False for x in range(19)] for y in range(19)]
         self.initGraphics()
         self.initSound()
-        self.turn = True
+        self.turn = input("Choose turn [1] or [2]: ")
         self.owner=[[0 for x in range(6)] for y in range(6)]
         self.me=0
         self.otherplayer=0
         self.didiwin=False
         self.running=False
 
+#___________________________PLAYER FUNCTION____________________________________
+    def player1(self,row_num,col_num):
+        print("Player 1")
+        if(board_array[row_num][col_num] != '%' and board_array[row_num][col_num] != '*'):
+            board_array[row_num][col_num] = '*'
+            with open("game state.txt","w") as file:
+                file.write(str(board_array))
+            self.Send_post_req()
+        else:
+            print("You cannot go there")
+
+
+    def player2(self,row_num,col_num):
+
+        print("player2")
+        if(board_array[row_num][col_num] != '%' and board_array[row_num][col_num] != '*'):
+            board_array[row_num][col_num] = '%'
+            with open("game state.txt","w") as file:
+                file.write(str(board_array))
+            self.Send_post_req()
+        else:
+            print("You cannot go there")
+
 #___________________________THE CLIENT________________________________________
     def Send_get_req(self):
        conn = http.client.HTTPConnection("192.168.159.86", 2000) #IPV4 - "149.162.139.182",80
+
        #request command to server
-       conn.request('GET','Hello.txt')
+       conn.request('GET','game state.txt')
 
        #get response from server
        response = conn.getresponse()
@@ -51,20 +76,18 @@ class GomokuGame():
        board_array = data_recieved
        conn.close()
 
-    # def Send_post_req(self):
-    #     #create a connection
-    #     conn = http.client.HTTPConnection("localhost",80)#192.168.0.24:6000
-    #
-    #     #request command to server
-    #     conn.request('POST',' ')#game state.txt
-    #     #get response from server
-    #     response = conn.getresponse()
-    #
-    #     #print server response and data
-    #     print("printing response...")
-    #     print(int(response.status), response.reason)
-    #     data_recieved = response.read()
-    #     conn.close()
+    def Send_post_req(self):
+        conn = http.client.HTTPConnection("192.168.162.146",3000)
+        #request command to server
+        conn.request('POST',' ')
+
+        #get response from server
+        conn.getresponse()
+
+        #print server response and data
+        print("printing response...")
+        print(int(response.status), response.reason)
+        conn.close()
 
     # --------------------------------
     # Build and update the board!
@@ -98,13 +121,18 @@ class GomokuGame():
 
     def update(self):
         global wait
+        self.otherplayer = ClientHandler.player
+
         #sleep to make the game 60 fps
         self.clock.tick(60)
-        wait = wait + 1
+        if(self.otherplayer == 1):#only do ths if it is not my turn
+            wait = wait + 1
 
-        if(wait == 30):
-            self.Send_get_req()
-            wait = 0
+            if(wait == 30):#waits for about 3 sec
+                self.Send_get_req()
+                wait = 0
+        else:
+            pass
 
         #clear the screen
         self.screen.fill(0)
@@ -118,18 +146,26 @@ class GomokuGame():
             if event.type == pygame.QUIT:
                 exit()
 
-        #get mouse position
-        mouse = pygame.mouse.get_pos()
+#NEED TO ASK THE PLAYER TO PICK 1 OR 0 SO WE CAN DETERMINE WHO GOES FIRST
 
-        #get x and y positions -- will output from(x,y):  (0,0) --> (18,18)
-        xpos = int(math.ceil((mouse[0]-32)/30.0))
-        ypos = int(math.ceil((mouse[1]-32)/30.0))
+        if(self.otherplayer == 0):#if it is my turn
+            #get mouse position
+            mouse = pygame.mouse.get_pos()
 
-        print(xpos)
-        print(ypos)
+            #get x and y positions -- will output from(x,y):  (0,0) --> (18,18)
+            xpos = int(math.ceil((mouse[0]-32)/30.0))
+            ypos = int(math.ceil((mouse[1]-32)/30.0))
 
-        if pygame.mouse.get_pressed()[0]:
-            self.screen.blit(self.orangecircle, [(xpos)*30, (ypos)*30+5])
+            if pygame.mouse.get_pressed()[0]:
+                if(self.turn == 1):
+                    self.screen.blit(self.orangecircle, [(xpos)*30, (ypos)*30+5])
+                    self.player1(ypos,xpos)
+                else:
+                    self.screen.blit(self.bluecircle, [(xpos)*30, (ypos)*30+5])
+                    self.player2(ypos,xpos)
+                self.otherplayer = 1#it is the other players turn now
+        else:
+            pass
 
         #update the screen
         pygame.display.flip()

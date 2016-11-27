@@ -2,6 +2,7 @@ from http.server import BaseHTTPRequestHandler,HTTPServer
 import os
 
 class ClientHandler(BaseHTTPRequestHandler):
+    player = 0
     user_name = input("Please enter your username: ")#your computer name
     #handle a GET request
     def do_GET(self):
@@ -24,26 +25,23 @@ class ClientHandler(BaseHTTPRequestHandler):
         except IOError:
             self.send_error(404,'file not found')
 
-    # #Handle a POST request
-    # def do_POST(self):
-    #     try:
-    #             #packing the header files together
-    #             self.send_response(200)#ok
-    #             self.end_headers()
-    #             return
-    #     except IOError:
-    #         self.send_error(404,'file not found')
+    #Handle a POST request
+    def do_POST(self):
+        try:
+                #packing the header files together
+                self.send_response(200)#ok
+                self.end_headers()
+                player = 0#enables player to make a move
+                return
+        except IOError:
+            self.send_error(404,'file not found')
 
 #-------------------------THE SERVER------------------------
 
 #this is how you create and run the server
 def run(server_class = HTTPServer, handler_class = ClientHandler):
     print("http server is starting...")
-<<<<<<< HEAD
     server_address = ('192.168.162.146',3000)#connect to this location
-=======
-    server_address = ('192.168.159.86',2000)#connect to this location
->>>>>>> joi
     httpd = server_class(server_address,handler_class)
     print("http is running...")
     httpd.serve_forever()
