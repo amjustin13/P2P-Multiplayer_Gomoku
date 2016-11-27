@@ -2,15 +2,12 @@ import pygame
 import math
 from http.client import HTTPConnection
 import http.client
-from joi import CreateBoard
 from The_Server import ClientHandler
 
 global board_array
 global wait
 
 wait = 0
-
-board_array = CreateBoard()
 
 class GomokuGame(ClientHandler):
     def __init__(self):
@@ -29,42 +26,53 @@ class GomokuGame(ClientHandler):
         self.board = [[False for x in range(19)] for y in range(19)]
         self.initGraphics()
         self.initSound()
-        self.turn = input("Choose turn [1] or [2]: ")
+        self.turn = input("[1] or [2]")
         self.owner=[[0 for x in range(6)] for y in range(6)]
         self.me=0
         self.otherplayer=0
         self.didiwin=False
         self.running=False
+        self.board_array = self.CreateBoard()
+
+    def CreateBoard(self):
+        self.CreateBoardArr = []
+        for x in range(0,19):
+            self.CreateBoardArr.append(['O'] * 19)
+            with open("game state.txt","w") as file:
+                file.write(str(self.CreateBoardArr))
+        print("board value: ",self.CreateBoardArr[0][8])
+        return self.CreateBoardArr
 
 #___________________________PLAYER FUNCTION____________________________________
     def player1(self,row_num,col_num):
-        print("Player 1")
-        if(board_array[row_num][col_num] != '%' and board_array[row_num][col_num] != '*'):
-            board_array[row_num][col_num] = '*'
+        print("Player 1:")
+        print(row_num,col_num)
+        if(self.board_array[row_num][col_num] != '%' and self.board_array[row_num][col_num] != '*'):
+            self.board_array[row_num][col_num] = '*'
             with open("game state.txt","w") as file:
-                file.write(str(board_array))
+                file.write(str(self.board_array))
             self.Send_post_req()
         else:
             print("You cannot go there")
 
 
     def player2(self,row_num,col_num):
-
-        print("player2")
-        if(board_array[row_num][col_num] != '%' and board_array[row_num][col_num] != '*'):
-            board_array[row_num][col_num] = '%'
+        print("player2:")
+        if(self.board_array[row_num][col_num] != '%' and self.board_array[row_num][col_num] != '*'):
+            self.board_array[row_num][col_num] = '%'
             with open("game state.txt","w") as file:
-                file.write(str(board_array))
+                file.write(str(self.board_array))
             self.Send_post_req()
         else:
             print("You cannot go there")
 
 #___________________________THE CLIENT________________________________________
     def Send_get_req(self):
+
        conn = http.client.HTTPConnection("192.168.159.86", 2000) #IPV4 - "149.162.139.182",80
 
        #request command to server
-       conn.request('GET','game state.txt')
+       conn.request("GET","game state.txt")
 
        #get response from server
        response = conn.getresponse()
@@ -77,12 +85,12 @@ class GomokuGame(ClientHandler):
        conn.close()
 
     def Send_post_req(self):
-        conn = http.client.HTTPConnection("192.168.162.146",3000)
+        conn = http.client.HTTPConnection("140.182.22.241",6000)
         #request command to server
-        conn.request('POST',' ')
+        conn.request("POST","he.txt", "gomoku")
 
         #get response from server
-        conn.getresponse()
+        response = conn.getresponse()
 
         #print server response and data
         print("printing response...")
@@ -157,12 +165,15 @@ class GomokuGame(ClientHandler):
             ypos = int(math.ceil((mouse[1]-32)/30.0))
 
             if pygame.mouse.get_pressed()[0]:
-                if(self.turn == 1):
+                if(self.turn == '1'):
                     self.screen.blit(self.orangecircle, [(xpos)*30, (ypos)*30+5])
                     self.player1(ypos,xpos)
-                else:
+                elif(self.turn == '2'):
                     self.screen.blit(self.bluecircle, [(xpos)*30, (ypos)*30+5])
                     self.player2(ypos,xpos)
+                else:
+                    print("no players found")
+                    exit()
                 self.otherplayer = 1#it is the other players turn now
         else:
             pass
