@@ -28,7 +28,8 @@ class ClientHandler(BaseHTTPRequestHandler):
     #Handle a POST request
     def do_POST(self):
         try:
-                #packing the header files together
+            if self.path.endswith('.txt'):
+               #packing the header files together
                 self.send_response(200)#ok
                 self.end_headers()
                 player = 0#enables player to make a move
@@ -41,7 +42,7 @@ class ClientHandler(BaseHTTPRequestHandler):
 #this is how you create and run the server
 def run(server_class = HTTPServer, handler_class = ClientHandler):
     print("http server is starting...")
-    server_address = ('149.162.139.182',80)#connect to this location
+    server_address = ('140.182.22.241',6000)#connect to this location
     httpd = server_class(server_address,handler_class)
     print("http is running...")
     httpd.serve_forever()
