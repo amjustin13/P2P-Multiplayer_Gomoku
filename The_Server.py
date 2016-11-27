@@ -1,11 +1,14 @@
 from http.server import BaseHTTPRequestHandler,HTTPServer
 import os
-from boxes import GomokuGame
 
-class ClientHandler(BaseHTTPRequestHandler,GomokuGame):
-    user_name = input("Please enter your username: ")#your computer name
+class ClientHandler(BaseHTTPRequestHandler):
+    def __init__(self):
+        self.user_name = input("Please enter your username: ")#your computer name
+        self.player = 3
+
     #handle a GET request
     def do_GET(self):
+        self.player = 1
         #file location
         rootdir = 'C:/Users/'+self.user_name+'/Desktop/'
         try:
@@ -27,6 +30,7 @@ class ClientHandler(BaseHTTPRequestHandler,GomokuGame):
 
     #Handle a POST request
     def do_POST(self):
+        self.player = 0
         try:
             if self.path.endswith('.txt'):
                #packing the header files together
