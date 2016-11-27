@@ -12,7 +12,6 @@ wait = 0
 class GomokuGame(ClientHandler):
     def __init__(self):
         pass
-
         pygame.init()
         pygame.font.init()
         width, height = 580, 680
@@ -46,7 +45,6 @@ class GomokuGame(ClientHandler):
 #___________________________PLAYER FUNCTION____________________________________
     def player1(self,row_num,col_num):
         print("Player 1:")
-        print(row_num,col_num)
         if(self.board_array[row_num][col_num] != '%' and self.board_array[row_num][col_num] != '*'):
             self.board_array[row_num][col_num] = '*'
             with open("game state.txt","w") as file:
@@ -54,7 +52,6 @@ class GomokuGame(ClientHandler):
             self.Send_post_req()
         else:
             print("You cannot go there")
-
 
     def player2(self,row_num,col_num):
         print("player2:")
@@ -68,7 +65,7 @@ class GomokuGame(ClientHandler):
 
 #___________________________THE CLIENT________________________________________
     def Send_get_req(self):
-       conn = http.client.HTTPConnection("140.182.22.241",6000)
+       conn = http.client.HTTPConnection("149.162.139.182",6000)
        #request command to server
        conn.request("GET","game state.txt")
 
@@ -83,7 +80,7 @@ class GomokuGame(ClientHandler):
        conn.close()
 
     def Send_post_req(self):
-        conn = http.client.HTTPConnection("140.182.22.241",6000)
+        conn = http.client.HTTPConnection("149.162.139.182",6000)
         #request command to server
         conn.request("POST","he.txt", "gomoku")
 
