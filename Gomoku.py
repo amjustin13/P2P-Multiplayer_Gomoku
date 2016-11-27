@@ -45,7 +45,7 @@ def iswinner(CreateBoard):
         for row_num in range(CreateBoard_w):
             if CreateBoard[row_num][col_num] == marker and CreateBoard[row_num+1][col_num] == marker and CreateBoard[row_num+2][col_num]==marker and CreateBoard[row_num+3][col_num]==marker and CreateBoard[row_num+4][col_num] == marker:
                 print(Player1, "You are a winner!")
-                playagain()
+                #playagain()
             if CreateBoard[row_num][col_num] == marker2 and CreateBoard[row_num+1][col_num] == marker2 and CreateBoard[row_num+2][col_num]==marker2 and CreateBoard[row_num+3][col_num]==marker2 and CreateBoard[row_num+4][col_num] == marker2:
                 print(Player2, "You are a winner!")
 #Check row for winner
@@ -99,56 +99,54 @@ def iswinner(CreateBoard):
 #print_board(CreateBoard)
 
 #Would you like to play again?
-def playagain():
-    print("Would you like to play again, Y/N")
-    answer = str(input())
-    if answer == 'Y':
-        main()
-    if answer == 'N':
-        print("Thank you for playing")
-        raise SystemExit()
+# def playagain():
+#     print("Would you like to play again, Y/N")
+#     answer = str(input())
+#     if answer == 'Y':
+#         main()
+#     if answer == 'N':
+#         print("Thank you for playing")
+#         raise SystemExit()
 
 
 
 #Main
-def main():
+while True:
+    #print_board(CreateBoard)
+    print_board(CreateBoard)
+    print (Player1, "enter row number: ")
+    row_num = int(input())
+    print (Player1, "enter column number: ")
+    col_num = int(input())
 
-    while True:
-        #print_board(CreateBoard)
+    if CreateBoard[row_num][col_num] != '*' and CreateBoard[row_num][col_num] != '%':
+        CreateBoard[row_num][col_num] = '*'
         print_board(CreateBoard)
-        print (Player1, "enter row number: ")
-        row_num = int(input())
-        print (Player1, "enter column number: ")
-        col_num = int(input())
+        iswinner(CreateBoard)
+    else: print("Please select a different spot")
+    print_board(CreateBoard)
 
-        if CreateBoard[row_num][col_num] != '*' and CreateBoard[row_num][col_num] != '%':
-            CreateBoard[row_num][col_num] = '*'
-            print_board(CreateBoard)
-            iswinner(CreateBoard)
-        else: print("Please select a different spot")
+    #Determine if the code should check for a winner
+        # tracker = tracker + 1
+        # print(tracker)
+        # if tracker >= 9:
+        #     iswinner(row_num,col_num,CreateBoard)
+        #     print_board(CreateBoard)
+        # if tracker < 9:
+        #     print_board(CreateBoard)
+
+    print (Player2, "enter row number: ")
+    row_num = int(input())
+    print (Player2, "enter column number: ")
+    col_num = int(input())
+
+    if CreateBoard[row_num][col_num] != '%' and CreateBoard[row_num][col_num] != '*':
+        CreateBoard[row_num][col_num] = '%'
         print_board(CreateBoard)
+        iswinner(CreateBoard)
 
-        #Determine if the code should check for a winner
-            # tracker = tracker + 1
-            # print(tracker)
-            # if tracker >= 9:
-            #     iswinner(row_num,col_num,CreateBoard)
-            #     print_board(CreateBoard)
-            # if tracker < 9:
-            #     print_board(CreateBoard)
-
-        print (Player2, "enter row number: ")
-        row_num = int(input())
-        print (Player2, "enter column number: ")
-        col_num = int(input())
-
-        if CreateBoard[row_num][col_num] != '%' and CreateBoard[row_num][col_num] != '*':
-            CreateBoard[row_num][col_num] = '%'
-            print_board(CreateBoard)
-            iswinner(CreateBoard)
-
-        else: print("Please select a different spot")
-        print_board(CreateBoard)
+    else: print("Please select a different spot")
+    print_board(CreateBoard)
 
 #Determine if the code should check for a winner
     # tracker = tracker + 1
