@@ -15,7 +15,7 @@ def get_input():
 
 def player1(CreateBoard):
     print("Player 1")
-    row_num,col_num = get_input()
+    #row_num,col_num = get_input()
     #changed logic to 'or' it can never be both choices
     if(CreateBoard[row_num][col_num] != '%' and CreateBoard[row_num][col_num] != '*'):
         CreateBoard[row_num][col_num] = '*'
@@ -23,7 +23,6 @@ def player1(CreateBoard):
         turn = 1
         with open("game state.txt","w") as file:
             file.write(str(CreateBoard))
-        send_post_resp()
 
     else:
         print("You cannot go there")
