@@ -1,11 +1,14 @@
 from http.server import BaseHTTPRequestHandler,HTTPServer
 import os
+global player
+player = 0
 
 class ClientHandler(BaseHTTPRequestHandler):
-    player = 0
     user_name = input("Please enter your username: ")#your computer name
     #handle a GET request
     def do_GET(self):
+        global player
+        player = 1
         #file location
         rootdir = 'C:/Users/'+self.user_name+'/Desktop/'
         try:
@@ -27,12 +30,13 @@ class ClientHandler(BaseHTTPRequestHandler):
 
     #Handle a POST request
     def do_POST(self):
+        global player
+        player = 0#enables player to make a move
         try:
             if self.path.endswith('.txt'):
                #packing the header files together
                 self.send_response(200)#ok
                 self.end_headers()
-                player = 0#enables player to make a move
                 return
         except IOError:
             self.send_error(404,'file not found')

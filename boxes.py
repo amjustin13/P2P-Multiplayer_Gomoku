@@ -29,7 +29,7 @@ class GomokuGame(ClientHandler):
         self.board = [[False for x in range(19)] for y in range(19)]
         self.initGraphics()
         self.initSound()
-        self.turn = input("Choose turn [1] or [2]: ")
+        self.turn = True
         self.owner=[[0 for x in range(6)] for y in range(6)]
         self.me=0
         self.otherplayer=0
@@ -61,9 +61,9 @@ class GomokuGame(ClientHandler):
 
 #___________________________THE CLIENT________________________________________
     def Send_get_req(self):
-       conn = http.client.HTTPConnection("192.168.162.146",3000)
+       conn = http.client.HTTPConnection("140.182.22.241",6000)
        #request command to server
-       conn.request('GET','game state.txt')
+       conn.request("GET","game state.txt")
 
        #get response from server
        response = conn.getresponse()
@@ -76,12 +76,12 @@ class GomokuGame(ClientHandler):
        conn.close()
 
     def Send_post_req(self):
-        conn = http.client.HTTPConnection("192.168.162.146",3000)
+        conn = http.client.HTTPConnection("140.182.22.241",6000)
         #request command to server
-        conn.request('POST',' ')
+        conn.request("POST","he.txt", "gomoku")
 
         #get response from server
-        conn.getresponse()
+        response = conn.getresponse()
 
         #print server response and data
         print("printing response...")
@@ -159,9 +159,12 @@ class GomokuGame(ClientHandler):
                 if(self.turn == 1):
                     self.screen.blit(self.orangecircle, [(xpos)*30, (ypos)*30+5])
                     self.player1(ypos,xpos)
-                else:
+                elif(self.turn == 2):
                     self.screen.blit(self.bluecircle, [(xpos)*30, (ypos)*30+5])
                     self.player2(ypos,xpos)
+                else:
+                    print("no players found")
+                    exit()
                 self.otherplayer = 1#it is the other players turn now
         else:
             pass
