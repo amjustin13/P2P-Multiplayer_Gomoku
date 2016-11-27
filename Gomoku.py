@@ -23,7 +23,7 @@ if ChooseColor == 2:
 #Create Board
 tracker = 0
 CreateBoard = []
-for x in range(0,18):
+for x in range(0,19):
     CreateBoard.append(["O"] * 19)
 
 
@@ -32,43 +32,167 @@ def print_board(CreateBoard):
         result1 = " ".join(row)
         print(result1)
 
+#-------------------------------------
+#WINNER FUNCTION
+#-------------------------------------
 
-#Determine winner of game
-def iswinner(CreateBoard):
-    CreateBoard_h = len(CreateBoard)
-    CreateBoard_w = len(CreateBoard)
+#Check column for winner (down and up)
+def col_down(CreateBoard):
+    # CreateBoard_h = len(CreateBoard)
+    # CreateBoard_w = len(CreateBoard)
     marker = '*'
     marker2 = '%'
-    print(CreateBoard_w)
-#Check column for winner
-    for col_num in range(CreateBoard_h):
-        for row_num in range(CreateBoard_w):
-            if CreateBoard[row_num][col_num] == marker and CreateBoard[row_num+1][col_num] == marker and CreateBoard[row_num+2][col_num]==marker and CreateBoard[row_num+3][col_num]==marker and CreateBoard[row_num+4][col_num] == marker:
-                print(Player1, "You are a winner!")
-                #playagain()
-            if CreateBoard[row_num][col_num] == marker2 and CreateBoard[row_num+1][col_num] == marker2 and CreateBoard[row_num+2][col_num]==marker2 and CreateBoard[row_num+3][col_num]==marker2 and CreateBoard[row_num+4][col_num] == marker2:
-                print(Player2, "You are a winner!")
-#Check row for winner
-    for row_num in range(CreateBoard_h):
-        for col_num in range(CreateBoard_w):
-            if CreateBoard[row_num][col_num] == marker and CreateBoard[row_num][col_num+1] == marker and CreateBoard[row_num][col_num+2]==marker and CreateBoard[row_num][col_num+3]==marker and CreateBoard[row_num][col_num+4] == marker:
-                print(Player1, "You are a winner1!")
-            if CreateBoard[row_num][col_num] == marker2 and CreateBoard[row_num][col_num+1] == marker2 and CreateBoard[row_num][col_num+2]==marker2 and CreateBoard[row_num][col_num+3]==marker2 and CreateBoard[row_num][col_num+4] == marker2:
-                print(Player2, "You are a winner1!")
-#Check (right to left) diagonal for winner
-    for col_num in range(CreateBoard_h):
-        for row_num in range(CreateBoard_w):
-            if CreateBoard[row_num][col_num] == marker and CreateBoard[row_num+1][col_num+1] == marker and CreateBoard[row_num+2][col_num+2]==marker and CreateBoard[row_num+3][col_num+3]==marker and CreateBoard[row_num+4][col_num+4] == markers:
-                print(Player1, "You are a winner2!")
-            if CreateBoard[row_num][col_num] == marker2 and CreateBoard[row_num+1][col_num+1] == marker2 and CreateBoard[row_num+2][col_num+2]==marker2 and CreateBoard[row_num+3][col_num+3]==marker2 and CreateBoard[row_num+4][col_num+4] == marker2:
-                print(Player2, "You are a winner2!")
-#Check (left to right) diagonal for winner
-    for col_num in range(CreateBoard_h):
-        for row_num in range(CreateBoard_w):
-            if CreateBoard[row_num][col_num] == marker and CreateBoard[row_num-1][col_num-1] == marker and CreateBoard[row_num-2][col_num-2]==marker and CreateBoard[row_num-3][col_num-3]==marker and CreateBoard[row_num-4][col_num-4] == marker:
-                print(Player1, "You are a winner3!")
-            if CreateBoard[row_num][col_num] == marker2 and CreateBoard[row_num-1][col_num-1] == marker2 and CreateBoard[row_num-2][col_num-2]==marker2 and CreateBoard[row_num-3][col_num-3]==marker2 and CreateBoard[row_num-4][col_num-4] == marker2:
-                print(Player2, "You are a winner3!")
+
+    # for col_num in range(0,19):
+    #     for row_num in range(0,19):
+    if CreateBoard[row_num][col_num] == marker and CreateBoard[row_num+1][col_num] == marker and CreateBoard[row_num+2][col_num]==marker and CreateBoard[row_num+3][col_num]==marker and CreateBoard[row_num+4][col_num] == marker:
+        print(Player1, "You are a WINNER!")
+        #playagain()
+    elif CreateBoard[row_num][col_num] == marker2 and CreateBoard[row_num+1][col_num] == marker2 and CreateBoard[row_num+2][col_num]==marker2 and CreateBoard[row_num+3][col_num]==marker2 and CreateBoard[row_num+4][col_num] == marker2:
+        print(Player2, "You are a WINNER!")
+
+def col_up(CreateBoard):
+    #CreateBoard_h = len(CreateBoard)
+    #CreateBoard_w = len(CreateBoard)
+    marker = '*'
+    marker2 = '%'
+    # for col_num in range(0,19):
+    #     for row_num in range(0,19):
+    if CreateBoard[row_num][col_num] == marker and CreateBoard[row_num-1][col_num] == marker and CreateBoard[row_num-2][col_num]==marker and CreateBoard[row_num-3][col_num]==marker and CreateBoard[row_num-4][col_num] == marker:
+        print(Player1, "You are a winner!")
+        #playagain()
+    if CreateBoard[row_num][col_num] == marker and CreateBoard[row_num-1][col_num] == marker and CreateBoard[row_num-2][col_num]==marker and CreateBoard[row_num-3][col_num]==marker and CreateBoard[row_num-4][col_num] == marker:
+        print(Player2, "You are a winner!")
+
+#Check row for winner(right and left)
+def row_right(CreateBoard):
+    #CreateBoard_h = len(CreateBoard)
+    #CreateBoard_w = len(CreateBoard)
+    marker = '*'
+    marker2 = '%'
+    # for row_num in range(0,19):
+    #     for col_num in range(0,19):
+    if CreateBoard[row_num][col_num] == marker and CreateBoard[row_num][col_num+1] == marker and CreateBoard[row_num][col_num+2]==marker and CreateBoard[row_num][col_num+3]==marker and CreateBoard[row_num][col_num+4] == marker:
+        print(Player1, "You are a winner1!")
+    if CreateBoard[row_num][col_num] == marker2 and CreateBoard[row_num][col_num+1] == marker2 and CreateBoard[row_num][col_num+2]==marker2 and CreateBoard[row_num][col_num+3]==marker2 and CreateBoard[row_num][col_num+4] == marker2:
+        print(Player2, "You are a winner1!")
+def row_left(CreateBoard):
+    # CreateBoard_h = len(CreateBoard)
+    # CreateBoard_w = len(CreateBoard)
+    marker = '*'
+    marker2 = '%'
+    # for col_num in range(0,19):
+    #     for row_num in range(0,19):
+    if CreateBoard[row_num][col_num] == marker and CreateBoard[row_num][col_num-1] == marker and CreateBoard[row_num][col_num-2]==marker and CreateBoard[row_num][col_num-3]==marker and CreateBoard[row_num][col_num-4] == marker:
+        print(Player1, "You are a winner1!")
+    if CreateBoard[row_num][col_num] == marker2 and CreateBoard[row_num][col_num-1] == marker2 and CreateBoard[row_num][col_num-2]==marker2 and CreateBoard[row_num][col_num-3]==marker2 and CreateBoard[row_num][col_num-4] == marker2:
+        print(Player2, "You are a winner1!")
+
+#Check (down to right) diagonal for winner
+def diag_down_right(CreateBoard):
+    # CreateBoard_h = len(CreateBoard)
+    # CreateBoard_w = len(CreateBoard)
+    marker = '*'
+    marker2 = '%'
+    # for col_num in range(0,19):
+    #     for row_num in range(0,19):
+    if CreateBoard[row_num][col_num] == marker and CreateBoard[row_num+1][col_num+1] == marker and CreateBoard[row_num+2][col_num+2]==marker and CreateBoard[row_num+3][col_num+3]==marker and CreateBoard[row_num+4][col_num+4] == markers:
+        print(Player1, "You are a winner2!")
+    if CreateBoard[row_num][col_num] == marker2 and CreateBoard[row_num+1][col_num+1] == marker2 and CreateBoard[row_num+2][col_num+2]==marker2 and CreateBoard[row_num+3][col_num+3]==marker2 and CreateBoard[row_num+4][col_num+4] == marker2:
+        print(Player2, "You are a winner2!")
+def diag_up_left(CreateBoard):
+    # CreateBoard_h = len(CreateBoard)
+    # CreateBoard_w = len(CreateBoard)
+    marker = '*'
+    marker2 = '%'
+    # for col_num in range(0,19):
+    #     for row_num in range(0,19):
+    if CreateBoard[row_num][col_num] == marker and CreateBoard[row_num-1][col_num-1] == marker and CreateBoard[row_num-2][col_num-2]==marker and CreateBoard[row_num-3][col_num-3]==marker and CreateBoard[row_num-4][col_num-4] == markers:
+        print(Player1, "You are a winner2!")
+    if CreateBoard[row_num][col_num] == marker and CreateBoard[row_num-1][col_num-1] == marker and CreateBoard[row_num-2][col_num-2]==marker and CreateBoard[row_num-3][col_num-3]==marker and CreateBoard[row_num-4][col_num-4] == markers:
+        print(Player2, "You are a winner2!")
+
+#Check (up to right and down to left) diagonal for winner
+def diag_up_right(CreateBoard):
+    # CreateBoard_h = len(CreateBoard)
+    # CreateBoard_w = len(CreateBoard)
+    marker = '*'
+    marker2 = '%'
+    # for col_num in range(0,19):
+    #     for row_num in range(0,19):
+    if CreateBoard[row_num][col_num] == marker and CreateBoard[row_num-1][col_num+1] == marker and CreateBoard[row_num-2][col_num+2]==marker and CreateBoard[row_num-3][col_num+3]==marker and CreateBoard[row_num-4][col_num+4] == markers:
+        print(Player1, "You are a winner2!")
+    if CreateBoard[row_num][col_num] == marker2 and CreateBoard[row_num-1][col_num+1] == marker2 and CreateBoard[row_num-2][col_num+2]==marker2 and CreateBoard[row_num-3][col_num+3]==marker2 and CreateBoard[row_num-4][col_num+4] == marker2:
+        print(Player2, "You are a winner2!")
+
+def diag_down_left(CreateBoard):
+    # CreateBoard_h = len(CreateBoard)
+    # CreateBoard_w = len(CreateBoard)
+    marker = '*'
+    marker2 = '%'
+    # for col_num in range(0,19):
+    #     for row_num in range(0,19):
+    if CreateBoard[row_num][col_num] == marker and CreateBoard[row_num+1][col_num-1] == marker and CreateBoard[row_num+2][col_num-2]==marker and CreateBoard[row_num+3][col_num-3]==marker and CreateBoard[row_num+4][col_num-4] == marker:
+        print(Player1, "You are a winner3!")
+    if CreateBoard[row_num][col_num] == marker2 and CreateBoard[row_num+1][col_num-1] == marker2 and CreateBoard[row_num+2][col_num-2]==marker2 and CreateBoard[row_num+3][col_num-3]==marker2 and CreateBoard[row_num+4][col_num-4] == marker2:
+        print(Player2, "You are a winner3!")
+
+def Check_Operating_Area(CreateBoard):
+    if row_num <= 3 and col_num <= 3: #region 1
+        col_down(CreateBoard)
+        row_right(CreateBoard)
+        diag_down_right(CreateBoard)
+    elif row_num >= 15 and col_num <= 3: #region 7
+        row_right(CreateBoard)
+        col_up(CreateBoard)
+        diag_up_right(CreateBoard)
+    elif row_num <= 3 and col_num >= 15: #region 3
+        row_left(CreateBoard)
+        col_down(CreateBoard)
+        diag_down_left(CreateBoard)
+    elif row_num >= 15 and col_num >= 15: #region 9
+        diag_up_left(CreateBoard)
+        row_left(CreateBoard)
+        col_up(CreateBoard)
+    elif row_num  >= 3 and row_num <= 15 and col_num <= 3: #region 4
+        row_right(CreateBoard)
+        diag_down_right(CreateBoard)
+        diag_up_right(CreateBoard)
+        col_up(CreateBoard)
+        col_down(CreateBoard)
+    elif row_num >= 3 and row_num <= 15 and col_num >= 15: #region 6
+        row_left(CreateBoard)
+        col_up(CreateBoard)
+        col_down(CreateBoard)
+        diag_up_left(CreateBoard)
+        diag_down_left(CreateBoard)
+    elif col_num >= 3 and col_num <= 15 and row_num <= 3: #region 2
+        col_down(CreateBoard)
+        row_right(CreateBoard)
+        row_left(CreateBoard)
+        diag_down_right(CreateBoard)
+        diag_down_left(CreateBoard)
+    elif col_num >= 3 and col_num <= 15 and row_num >= 15: #region 8
+        col_up(CreateBoard)
+        row_right(CreateBoard)
+        row_left(CreateBoard)
+        diag_up_right(CreateBoard)
+        diag_up_left(CreateBoard)
+    elif col_num >= 3 and col_num <= 15 and row_num >= 3 and row_num <= 15: #region 5
+        col_up(CreateBoard)
+        col_down(CreateBoard)
+        row_right(CreateBoard)
+        row_left(CreateBoard)
+        diag_up_right(CreateBoard)
+        diag_up_left(CreateBoard)
+        diag_down_left(CreateBoard)
+        diag_down_right(CreateBoard)
+
+
+
+
+
+
     # print(row_num,col_num)
     # # for row_num in range(0,17):
     # #     for col_num in range(0,17):
@@ -112,7 +236,6 @@ def iswinner(CreateBoard):
 
 #Main
 while True:
-    #print_board(CreateBoard)
     print_board(CreateBoard)
     print (Player1, "enter row number: ")
     row_num = int(input())
@@ -122,7 +245,7 @@ while True:
     if CreateBoard[row_num][col_num] != '*' and CreateBoard[row_num][col_num] != '%':
         CreateBoard[row_num][col_num] = '*'
         print_board(CreateBoard)
-        iswinner(CreateBoard)
+        Check_Operating_Area(CreateBoard)
     else: print("Please select a different spot")
     print_board(CreateBoard)
 
@@ -143,7 +266,7 @@ while True:
     if CreateBoard[row_num][col_num] != '%' and CreateBoard[row_num][col_num] != '*':
         CreateBoard[row_num][col_num] = '%'
         print_board(CreateBoard)
-        iswinner(CreateBoard)
+        Check_Operating_Area(CreateBoard)
 
     else: print("Please select a different spot")
     print_board(CreateBoard)
