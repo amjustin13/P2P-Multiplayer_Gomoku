@@ -5,7 +5,6 @@ class ClientHandler(BaseHTTPRequestHandler):
     user_name = input("Please enter your username: ")#your computer name
     #handle a GET request
     def do_GET(self):
-        player = 1
         #file location
         rootdir = 'C:/Users/'+self.user_name+'/Desktop/'
         try:
@@ -13,7 +12,7 @@ class ClientHandler(BaseHTTPRequestHandler):
                 f = open(rootdir + self.path)#opens the requested file
 
                 #packing the header files together
-                self.send_response(200)#ok
+                self.send_response(200,message = 1)#ok
                 #specify the type you are handling
                 self.send_header("Content-type", "text/txt")
                 self.end_headers()
@@ -21,19 +20,18 @@ class ClientHandler(BaseHTTPRequestHandler):
                 #send the file contents to client
                 self.wfile.write(bytes(f.readline(),"utf-8"))
                 f.close()
-                return
+                return player
         except IOError:
             self.send_error(404,'file not found')
 
     #Handle a POST request
     def do_POST(self):
-        player = 0#enables player to make a move
         try:
             if self.path.endswith('.txt'):
                #packing the header files together
-                self.send_response(200)#ok
+                self.send_response(200,message = 0)#ok
                 self.end_headers()
-                return
+                return player
         except IOError:
             self.send_error(404,'file not found')
 

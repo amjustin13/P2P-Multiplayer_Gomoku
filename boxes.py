@@ -71,7 +71,7 @@ class GomokuGame(ClientHandler):
 
        #get response from server
        response = conn.getresponse()
-
+       print("this is all of response: ",response)
        #print server response and data
        print("printing response...")
        print(int(response.status), response.reason)
@@ -86,7 +86,7 @@ class GomokuGame(ClientHandler):
 
         #get response from server
         response = conn.getresponse()
-
+        print("this is all of response: ",response)
         #print server response and data
         print("printing response...")
         print(int(response.status), response.reason)
@@ -124,7 +124,6 @@ class GomokuGame(ClientHandler):
 
     def update(self):
         global wait
-        self.otherplayer = ClientHandler.player
 
         #sleep to make the game 60 fps
         self.clock.tick(60)
