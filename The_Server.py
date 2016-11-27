@@ -2,17 +2,14 @@ from http.server import BaseHTTPRequestHandler,HTTPServer
 import os
 
 class ClientHandler(BaseHTTPRequestHandler):
-    def __init__(self):
-        self.user_name = input("Please enter your username: ")#your computer name
-        self.player = 3
+    user_name = input("Please enter your username: ")#your computer name
 
     #handle a GET request
     def do_GET(self):
-        self.player = 1
         #file location
-        rootdir = 'C:/Users/'+self.user_name+'/Desktop/'
+        rootdir = 'C:/Users/'+user_name+'/P2P-Multiplayer_Gomoku/'
         try:
-            if self.path.endswith('.txt') and GomokuGame.otherplayer == 1:
+            if self.path.endswith('.txt'):
                 f = open(rootdir + self.path)#opens the requested file
 
                 #packing the header files together
@@ -30,7 +27,6 @@ class ClientHandler(BaseHTTPRequestHandler):
 
     #Handle a POST request
     def do_POST(self):
-        self.player = 0
         try:
             if self.path.endswith('.txt'):
                #packing the header files together
@@ -50,6 +46,6 @@ def run(server_class = HTTPServer, handler_class = ClientHandler):
     httpd = server_class(server_address,handler_class)
     print("http is running...")
     httpd.serve_forever()
-
+    
 if(__name__ == '__main__'):
    run()

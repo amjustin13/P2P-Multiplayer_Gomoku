@@ -67,24 +67,30 @@ class GomokuGame(ClientHandler):
     def Send_get_req(self):
        conn = http.client.HTTPConnection("149.162.139.182",6000)
        #request command to server
-       conn.request("GET","he.txt")
+       conn.request("GET","game state.txt")
 
        #get response from server
        response = conn.getresponse()
+       print("message value: ",response.msg)
        #print server response and data
        print("printing response...")
        print(int(response.status), response.reason)
-       data_recieved = response.read()
-       board_array = data_recieved
+
+       if(data_recieved != self.board_array):#if the board updated
+            data_recieved = response.read()
+            self.board_array = data_recieved
+            self.otherplayer = response.msg
        conn.close()
 
     def Send_post_req(self):
         conn = http.client.HTTPConnection("149.162.139.182",6000)
         #request command to server
-        conn.request("POST","he.txt")
+        conn.request("POST","game state.txt")
 
         #get response from server
         response = conn.getresponse()
+        print("message value: ",response.msg)
+        self.otherplayer = response.msg
         #print server response and data
         print("printing response...")
         print(int(response.status), response.reason)
@@ -122,7 +128,6 @@ class GomokuGame(ClientHandler):
 
     def update(self):
         global wait
-        self.otherplayer = ClientHandler.player
         #sleep to make the game 60 fps
         self.clock.tick(60)
         if(self.otherplayer == 1):#only do ths if it is not my turn
