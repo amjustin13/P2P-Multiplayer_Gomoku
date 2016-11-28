@@ -25,14 +25,14 @@ class GomokuGame(ClientHandler):
         self.board = [[False for x in range(19)] for y in range(19)]
         self.initGraphics()
         self.initSound()
-        self.turn = input("[1] or [2]")
+        self.turn = input("[0] or [1]")
         self.owner=[[0 for x in range(6)] for y in range(6)]
         self.me=0
         self.didiwin=False
         self.running=False
         self.board_array = self.CreateBoard()
-        self.data_recieved = self.CreateBoard()
-        if(self.turn == '1'):
+        self.data_recieved = str(self.CreateBoard())
+        if(self.turn == '0'):
             self.otherplayer = 0
         else:
             self.otherplayer = 1
@@ -43,7 +43,6 @@ class GomokuGame(ClientHandler):
             self.CreateBoardArr.append(['O'] * 19)
             with open("C:/Users/marquies/Desktop/he.txt","w") as file:
                 file.write(str(self.CreateBoardArr))
-        print("board value: ",self.CreateBoardArr[0][8])
         return self.CreateBoardArr
 
 #___________________________PLAYER FUNCTION____________________________________
@@ -51,7 +50,7 @@ class GomokuGame(ClientHandler):
         print("Player 1:")
         if(self.board_array[row_num][col_num] != '%' and self.board_array[row_num][col_num] != '*'):
             self.board_array[row_num][col_num] = '*'
-            with open("he.txt","w") as file:
+            with open("C:/Users/marquies/Desktop/he.txt","w") as file:
                 file.write(str(self.board_array))
             self.Send_post_req()
         else:
@@ -79,12 +78,15 @@ class GomokuGame(ClientHandler):
        #print server response and data
        print("printing response...")
        print(int(response.status), response.reason)
-       #self.data_recieved = self.new_data
+
        print(self.data_recieved,"\n\n\n\n",self.board_array)
-       if(self.data_recieved == self.board_array):#if the board updated
+       if(self.data_recieved != str(self.board_array)):#if the board updated
             self.data_recieved = response.read()
             self.board_array = self.data_recieved
             self.otherplayer = response.reason
+
+       if(self.otherplayer == int(self.turn)):
+           self.data_recieved = str(response.read(),"utf-8")
        conn.close()
 
     def Send_post_req(self):
@@ -168,16 +170,16 @@ class GomokuGame(ClientHandler):
             ypos = int(math.ceil((mouse[1]-32)/30.0))
 
             if pygame.mouse.get_pressed()[0]:
-                if(self.turn == '1'):
+                if(self.turn == '0'):
                     self.screen.blit(self.orangecircle, [(xpos)*30+8, (ypos)*30+14])
                     self.player1(ypos,xpos)
-                elif(self.turn == '2'):
+                elif(self.turn == '1'):
                     self.screen.blit(self.bluecircle, [(xpos)*30+8, (ypos)*30+14])
                     self.player2(ypos,xpos)
                 else:
                     print("no players found")
                     exit()
-                self.otherplayer = 1#it is the other players turn now
+                #self.otherplayer = 1#it is the other players turn now
         else:
             pass
 
