@@ -28,16 +28,20 @@ class GomokuGame(ClientHandler):
         self.turn = input("[1] or [2]")
         self.owner=[[0 for x in range(6)] for y in range(6)]
         self.me=0
-        self.otherplayer=0
         self.didiwin=False
         self.running=False
         self.board_array = self.CreateBoard()
+        self.data_recieved = self.CreateBoard()
+        if(self.turn == '1'):
+            self.otherplayer = 0
+        else:
+            self.otherplayer = 1
 
     def CreateBoard(self):
         self.CreateBoardArr = []
         for x in range(0,19):
             self.CreateBoardArr.append(['O'] * 19)
-            with open("game state.txt","w") as file:
+            with open("C:/Users/marquies/Desktop/he.txt","w") as file:
                 file.write(str(self.CreateBoardArr))
         print("board value: ",self.CreateBoardArr[0][8])
         return self.CreateBoardArr
@@ -47,7 +51,7 @@ class GomokuGame(ClientHandler):
         print("Player 1:")
         if(self.board_array[row_num][col_num] != '%' and self.board_array[row_num][col_num] != '*'):
             self.board_array[row_num][col_num] = '*'
-            with open("game state.txt","w") as file:
+            with open("he.txt","w") as file:
                 file.write(str(self.board_array))
             self.Send_post_req()
         else:
@@ -57,7 +61,7 @@ class GomokuGame(ClientHandler):
         print("player2:")
         if(self.board_array[row_num][col_num] != '%' and self.board_array[row_num][col_num] != '*'):
             self.board_array[row_num][col_num] = '%'
-            with open("game state.txt","w") as file:
+            with open("he.txt","w") as file:
                 file.write(str(self.board_array))
             self.Send_post_req()
         else:
@@ -67,33 +71,35 @@ class GomokuGame(ClientHandler):
     def Send_get_req(self):
        conn = http.client.HTTPConnection("149.162.139.182",6000)
        #request command to server
-       conn.request("GET","game state.txt")
+       conn.request("GET","he.txt")
 
        #get response from server
        response = conn.getresponse()
-       print("message value: ",response.msg)
+       print("message value from get req: ",response.reason)
        #print server response and data
        print("printing response...")
        print(int(response.status), response.reason)
-
-       if(data_recieved != self.board_array):#if the board updated
-            data_recieved = response.read()
-            self.board_array = data_recieved
-            self.otherplayer = response.msg
+       #self.data_recieved = self.new_data
+       print(self.data_recieved,"\n\n\n\n",self.board_array)
+       if(self.data_recieved == self.board_array):#if the board updated
+            self.data_recieved = response.read()
+            self.board_array = self.data_recieved
+            self.otherplayer = response.reason
        conn.close()
 
     def Send_post_req(self):
         conn = http.client.HTTPConnection("149.162.139.182",6000)
         #request command to server
-        conn.request("POST","game state.txt")
+        conn.request("POST","he.txt")
 
         #get response from server
         response = conn.getresponse()
-        print("message value: ",response.msg)
-        self.otherplayer = response.msg
+        print("message value from POST req: ",response.reason)
+        self.otherplayer = response.reason
         #print server response and data
         print("printing response...")
         print(int(response.status), response.reason)
+
         conn.close()
 
     # --------------------------------
