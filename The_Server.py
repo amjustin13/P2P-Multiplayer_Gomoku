@@ -19,7 +19,7 @@ class ClientHandler(BaseHTTPRequestHandler):
                 self.end_headers()
 
                 #send the file contents to client
-                self.wfile.write(bytes(f.readline()))
+                self.wfile.write(bytes(f.readline(),"utf-8"))
                 f.close()
                 return
         except IOError:
