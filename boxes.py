@@ -4,7 +4,7 @@ from http.client import HTTPConnection
 import http.client
 from The_Server import ClientHandler
 import json
-
+import os
 global board_array
 global wait
 
@@ -95,10 +95,10 @@ class GomokuGame(ClientHandler):
 
        conn.close()
 
-    def Send_post_req(self, file):
+    def Send_post_req(self, temp):
         conn = http.client.HTTPConnection("149.162.139.182",6000)
         #request command to server
-        conn.request("POST","he.txt", file)
+        conn.request("POST","he.txt", temp)
 
         #get response from server
         response = conn.getresponse()
@@ -140,36 +140,44 @@ class GomokuGame(ClientHandler):
         self.screen.blit(scoreother, (340, 635))
 
     def updateBoard(self):
-        content = open("C:/Users/marquies/Desktop/he.txt").read()
-        rowcolList = content.split(',')
-        if(self.board_array[int(rowcolList[0])][int(rowcolList[1])] != '%' and self.board_array[int(rowcolList[0])][int(rowcolList[1])] != '*'):
-            self.otherplayer = '0'
-            if(self.turn == '0'):
-                self.player1(int(rowcolList[0]), int(rowcolList[1]))
-            elif(self.turn == '1'):
-                self.player2(int(rowcolList[0]), int(rowcolList[1]))
-        else:
-            self.otherplayer = '1'
+        if os.stat("C:/Users/marquies/Desktop/he.txt").st_size != 0:
+            temp = open("C:/Users/marquies/Desktop/he.txt").read()
+            temp = temp.split("b")
+            temp = temp[1].split("'")
+            temp = temp[1].split(",")
+            print("temp: ",temp[0],temp[1])
+
+            if(self.otherplayer == '1' and self.turn == '0'):#if player 1 cannot make a move
+                if(self.board_array[int(temp[0])][int(temp[1])] == '%'):
+                    self.otherplayer = '0'
+                    # if(self.turn == '0'):
+                    #     self.player1(int(temp[0]), int(temp[1]))
+                    # elif(self.turn == '1'):
+                    #     self.player2(int(temp[0]), int(temp[1]))
+            elif(self.otherplayer =='1' and self.turn == '1'):#if player 2 cannot make a move
+                if(self.board_array[int(temp[0])][int(temp[1])] == '*'):
+                    self.otherplayer = '0'
+
 
     def drawPlayerBoard(self):
         for x in range(19):
             for y in range(19):
                 if self.board_array[y][x] == '*':
-                    self.screen.blit(self.orangecircle, [(xpos)*30+8, (ypos)*30+14])
+                    self.screen.blit(self.orangecircle, [(x)*30+8, (y)*30+14])
                 elif self.board_array[y][x] == '%':
-                    self.screen.blit(self.bluecircle, [(xpos)*30+8, (ypos)*30+14])
+                    self.screen.blit(self.bluecircle, [(x)*30+8, (y)*30+14])
     def update(self):
         global wait
         #sleep to make the game 60 fps
         self.clock.tick(60)
-        if(self.otherplayer == '1'):#only do ths if it is not my turn
-            wait = wait + 1
-
-            if(wait == 30):#waits for about 3 sec
-                # self.Send_get_req()
-                wait = 0
-        else:
-            pass
+        # if(self.otherplayer == '1'):#only do ths if it is not my turn
+        #     wait = wait + 1
+        #
+        #     if(wait == 30):#waits for about 3 sec
+        #         # self.Send_get_req()
+        #         wait = 0
+        # else:
+        #     pass
 
         #clear the screen
         self.screen.fill(0)
@@ -196,13 +204,18 @@ class GomokuGame(ClientHandler):
             ypos = int(math.ceil((mouse[1]-32)/30.0))
 
             if pygame.mouse.get_pressed()[0]:
-                with open("C:/Users/marquies/Desktop/he.txt","w") as file:
-                    file.write(str(xpos)+","+str(ypos))
-                self.Send_post_req(file)
+                # with open("C:/Users/marquies/Desktop/he.txt","w+") as file:
+                #     file.write(str(xpos)+","+str(ypos))
+                colrowStr = str(xpos) + "," + str(ypos)
+
                 if(self.turn == '0'):
                     self.player1(ypos,xpos)
+                    self.Send_post_req(colrowStr)
+                    self.otherplayer = '1'
                 elif(self.turn == '1'):
                     self.player2(ypos,xpos)
+                    self.Send_post_req(colrowStr)
+                    self.otherplayer = '1'
                 else:
                     print("no players found")
                     exit()

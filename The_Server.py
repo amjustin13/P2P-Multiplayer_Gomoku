@@ -34,8 +34,8 @@ class ClientHandler(BaseHTTPRequestHandler):
             print(file_content)
 
             if self.path.endswith('.txt'):
-                f = open(rootdir + self.path)#opens the requested file
-                f.write(file_content)
+                f = open(rootdir + self.path,"w")#opens the requested file
+                f.write(str(file_content))
 
             #packing the header files together
             self.send_response(200,1)#ok
