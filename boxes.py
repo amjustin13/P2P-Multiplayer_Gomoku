@@ -3,6 +3,7 @@ import math
 from http.client import HTTPConnection
 import http.client
 from The_Server import ClientHandler
+import json
 
 global board_array
 global wait
@@ -33,9 +34,9 @@ class GomokuGame(ClientHandler):
         self.board_array = self.CreateBoard()
         self.data_recieved = str(self.CreateBoard())
         if(self.turn == '0'):
-            self.otherplayer = 0
+            self.otherplayer = '0'
         else:
-            self.otherplayer = 1
+            self.otherplayer = '1'
 
     def CreateBoard(self):
         self.CreateBoardArr = []
@@ -79,14 +80,24 @@ class GomokuGame(ClientHandler):
        print("printing response...")
        print(int(response.status), response.reason)
 
-       print(self.data_recieved,"\n\n\n\n",self.board_array)
-       if(self.data_recieved != str(self.board_array)):#if the board updated
-            self.data_recieved = response.read()
-            self.board_array = self.data_recieved
-            self.otherplayer = response.reason
-
-       if(self.otherplayer == int(self.turn)):
+       if(self.otherplayer == self.turn):
            self.data_recieved = str(response.read(),"utf-8")
+           
+       if(self.turn == '0'):#if you are player 1 go here
+           print(self.data_recieved,"\n\n\n\n",self.board_array)
+           if(self.data_recieved == str(self.board_array)):#if the board updated
+                #self.data_recieved = response.read()
+                self.board_array = self.data_recieved
+                self.otherplayer = response.reason
+
+       if(self.turn == '1'):#if you are player 2 go here
+            print(self.data_recieved,"\n\n\n\n",self.board_array)
+            if(self.data_recieved != str(self.board_array)):#if the board updated
+                 #self.data_recieved = response.read()
+                 self.board_array = self.data_recieved
+                 self.otherplayer = response.reason
+
+
        conn.close()
 
     def Send_post_req(self):
@@ -101,7 +112,6 @@ class GomokuGame(ClientHandler):
         #print server response and data
         print("printing response...")
         print(int(response.status), response.reason)
-
         conn.close()
 
     # --------------------------------
@@ -138,7 +148,7 @@ class GomokuGame(ClientHandler):
         global wait
         #sleep to make the game 60 fps
         self.clock.tick(60)
-        if(self.otherplayer == 1):#only do ths if it is not my turn
+        if(self.otherplayer == '1'):#only do ths if it is not my turn
             wait = wait + 1
 
             if(wait == 30):#waits for about 3 sec
@@ -161,7 +171,7 @@ class GomokuGame(ClientHandler):
 
 #NEED TO ASK THE PLAYER TO PICK 1 OR 0 SO WE CAN DETERMINE WHO GOES FIRST
 
-        if(self.otherplayer == 0):#if it is my turn
+        if(self.otherplayer == '0'):#if it is my turn
             #get mouse position
             mouse = pygame.mouse.get_pos()
 
