@@ -31,7 +31,7 @@ class GomokuGame(ClientHandler):
         self.didiwin=False
         self.running=False
         self.board_array = self.CreateBoard()
-        # self.data_recieved = self.CreateBoard()
+        self.data_recieved = self.CreateBoard()
         self.temp = ["20","20"]
         if(self.turn == '0'):
             self.otherplayer = '0'
@@ -48,16 +48,22 @@ class GomokuGame(ClientHandler):
     def player1(self,row_num,col_num):
         print("Player 1:")
         if(self.board_array[row_num][col_num] != '%' and self.board_array[row_num][col_num] != '*'):
-            self.board_array[row_num][col_num] = '*'
+            if(self.otherplayer == '1'):
+                self.board_array[row_num][col_num] = '%'
+            else:
+                self.board_array[row_num][col_num] = '*'
         else:
-            print("You cannot go there")
+            print("You cannot go there player 1")
 
     def player2(self,row_num,col_num):
         print("player2:")
         if(self.board_array[row_num][col_num] != '%' and self.board_array[row_num][col_num] != '*'):
-            self.board_array[row_num][col_num] = '%'
+            if(self.otherplayer == '1'):
+                self.board_array[row_num][col_num] = '*'
+            else:
+                self.board_array[row_num][col_num] = '%'
         else:
-            print("You cannot go there")
+            print("You cannot go there player 2")
 
 #___________________________THE CLIENT________________________________________
     def Send_get_req(self):
@@ -96,7 +102,7 @@ class GomokuGame(ClientHandler):
        conn.close()
 
     def Send_post_req(self, temp):
-        conn = http.client.HTTPConnection("149.162.139.182",6000)
+        conn = http.client.HTTPConnection("140.182.22.241",6000)
         #request command to server
         conn.request("POST","he.txt", temp)
 
@@ -140,23 +146,31 @@ class GomokuGame(ClientHandler):
         self.screen.blit(scoreother, (340, 635))
 
     def updateBoard(self):
-        if os.stat("C:/Users/marquies/Desktop/he.txt").st_size != 0:
-            temp = open("C:/Users/marquies/Desktop/he.txt").read()
+        if os.stat("C:/Users/marqk/Desktop/he.txt").st_size != 0:
+
+            temp = open("C:/Users/marqk/Desktop/he.txt").read()
             temp = temp.split("b")
             temp = temp[1].split("'")
             temp = temp[1].split(",")
-            print("temp: ",temp[0],temp[1])
+
+
+            if(self.turn == '0'):
+                self.player1(int(temp[1]), int(temp[0]))
+            elif(self.turn == '1'):
+                self.player2(int(temp[1]), int(temp[0]))
 
             if(self.otherplayer == '1' and self.turn == '0'):#if player 1 cannot make a move
-                if(self.board_array[int(temp[0])][int(temp[1])] == '%'):
+                if(self.board_array[int(temp[0])][int(temp[1])] == '%' and self.data_recieved[int(temp[0])][int(temp[1])] == 'O'):
                     self.otherplayer = '0'
-                    # if(self.turn == '0'):
-                    #     self.player1(int(temp[0]), int(temp[1]))
-                    # elif(self.turn == '1'):
-                    #     self.player2(int(temp[0]), int(temp[1]))
+                    self.data_recieved[int(temp[0])][int(temp[1])] = '1'
+                    temp = 0
             elif(self.otherplayer =='1' and self.turn == '1'):#if player 2 cannot make a move
-                if(self.board_array[int(temp[0])][int(temp[1])] == '*'):
+                if(self.board_array[int(temp[1])][int(temp[0])] == '*' and self.data_recieved[int(temp[1])][int(temp[0])] == 'O'):
                     self.otherplayer = '0'
+                    self.data_recieved[int(temp[1])][int(temp[0])] = '1'
+                    temp = 0
+
+
 
 
     def drawPlayerBoard(self):

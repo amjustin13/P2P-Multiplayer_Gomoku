@@ -27,7 +27,7 @@ class ClientHandler(BaseHTTPRequestHandler):
 
     #Handle a POST request
     def do_POST(self):
-        rootdir = 'C:/Users/marquies/Desktop/'
+        rootdir = 'C:/Users/marqk/Desktop/'
         try:
             content_length = int(self.headers['Content-Length'])
             file_content = self.rfile.read(content_length)
@@ -48,7 +48,7 @@ class ClientHandler(BaseHTTPRequestHandler):
 #this is how you create and run the server
 def run(server_class = HTTPServer, handler_class = ClientHandler):
     print("http server is starting...")
-    server_address = ('140.182.22.241',6000)#connect to this location
+    server_address = ('149.162.139.182',6000)#connect to this location
     httpd = server_class(server_address,handler_class)
     print("http is running...")
     httpd.serve_forever()
