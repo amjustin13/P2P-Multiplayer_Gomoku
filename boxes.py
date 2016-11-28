@@ -27,12 +27,12 @@ class GomokuGame(ClientHandler):
         self.initGraphics()
         self.initSound()
         self.turn = input("[0] or [1]")
-        self.owner=[[0 for x in range(6)] for y in range(6)]
         self.me=0
         self.didiwin=False
         self.running=False
         self.board_array = self.CreateBoard()
-        self.data_recieved = self.CreateBoard()
+        # self.data_recieved = self.CreateBoard()
+        self.temp = ["20","20"]
         if(self.turn == '0'):
             self.otherplayer = '0'
         else:
@@ -40,7 +40,6 @@ class GomokuGame(ClientHandler):
 
     def CreateBoard(self):
         self.CreateBoardArr = []
-        self.temp = []
         for x in range(0,19):
             self.CreateBoardArr.append(['O'] * 19)
         return self.CreateBoardArr
@@ -50,9 +49,6 @@ class GomokuGame(ClientHandler):
         print("Player 1:")
         if(self.board_array[row_num][col_num] != '%' and self.board_array[row_num][col_num] != '*'):
             self.board_array[row_num][col_num] = '*'
-            with open("C:/Users/marquies/Desktop/he.txt","w") as file:
-                file.write(str(row_num)+str(col_num))
-            self.Send_post_req()
         else:
             print("You cannot go there")
 
@@ -60,9 +56,6 @@ class GomokuGame(ClientHandler):
         print("player2:")
         if(self.board_array[row_num][col_num] != '%' and self.board_array[row_num][col_num] != '*'):
             self.board_array[row_num][col_num] = '%'
-            with open("C:/Users/marquies/Desktop/he.txt","w") as file:
-                file.write(str(row_num)+str(col_num))
-            self.Send_post_req()
         else:
             print("You cannot go there")
 
@@ -80,30 +73,32 @@ class GomokuGame(ClientHandler):
        print(int(response.status), response.reason)
 
        if(self.otherplayer == self.turn):
-           temp = str(response.read(),"utf-8")
-           print(temp)        
+            temp = str(response.read(),"utf-8")
+            #temp = temp.split(",")
+            print("temp: ",temp)
 
-       if(self.turn == '0'):#if you are player 1 go here
-           #print(self.data_recieved,"\n\n\n\n",self.board_array)
-           if(self.data_recieved == self.board_array):#if the board updated
-                #self.data_recieved = response.read()
-                self.board_array = self.data_recieved
-                self.otherplayer = response.reason
 
-       if(self.turn == '1'):#if you are player 2 go here
-            #print(self.data_recieved,"\n\n\n\n",self.board_array)
-            if(self.data_recieved != self.board_array):#if the board updated
-                 #self.data_recieved = response.read()
-                 self.board_array = self.data_recieved
-                 self.otherplayer = response.reason
+    #    if(self.turn == '0'):#if you are player 1 go here
+    #        #print(self.data_recieved,"\n\n\n\n",self.board_array)
+    #        if(self.data_recieved == self.board_array):#if the board updated
+    #             #self.data_recieved = response.read()
+    #             self.board_array = self.data_recieved
+    #             self.otherplayer = response.reason
+       #
+    #    if(self.turn == '1'):#if you are player 2 go here
+    #         #print(self.data_recieved,"\n\n\n\n",self.board_array)
+    #         if(self.data_recieved != self.board_array):#if the board updated
+    #              #self.data_recieved = response.read()
+    #              self.board_array = self.data_recieved
+    #              self.otherplayer = response.reason
 
 
        conn.close()
 
-    def Send_post_req(self):
+    def Send_post_req(self, file):
         conn = http.client.HTTPConnection("149.162.139.182",6000)
         #request command to server
-        conn.request("POST","he.txt")
+        conn.request("POST","he.txt", file)
 
         #get response from server
         response = conn.getresponse()
@@ -144,6 +139,25 @@ class GomokuGame(ClientHandler):
         self.screen.blit(scoretextother, (280, 625))
         self.screen.blit(scoreother, (340, 635))
 
+    def updateBoard(self):
+        content = open("C:/Users/marquies/Desktop/he.txt").read()
+        rowcolList = content.split(',')
+        if(self.board_array[int(rowcolList[0])][int(rowcolList[1])] != '%' and self.board_array[int(rowcolList[0])][int(rowcolList[1])] != '*'):
+            self.otherplayer = '0'
+            if(self.turn == '0'):
+                self.player1(int(rowcolList[0]), int(rowcolList[1]))
+            elif(self.turn == '1'):
+                self.player2(int(rowcolList[0]), int(rowcolList[1]))
+        else:
+            self.otherplayer = '1'
+
+    def drawPlayerBoard(self):
+        for x in range(19):
+            for y in range(19):
+                if self.board_array[y][x] == '*':
+                    self.screen.blit(self.orangecircle, [(xpos)*30+8, (ypos)*30+14])
+                elif self.board_array[y][x] == '%':
+                    self.screen.blit(self.bluecircle, [(xpos)*30+8, (ypos)*30+14])
     def update(self):
         global wait
         #sleep to make the game 60 fps
@@ -152,7 +166,7 @@ class GomokuGame(ClientHandler):
             wait = wait + 1
 
             if(wait == 30):#waits for about 3 sec
-                self.Send_get_req()
+                # self.Send_get_req()
                 wait = 0
         else:
             pass
@@ -163,6 +177,8 @@ class GomokuGame(ClientHandler):
         #draw the board
         self.drawBoard()
         self.drawHUD()
+        self.updateBoard()
+        self.drawPlayerBoard()
 
         for event in pygame.event.get():
             #quit if the quit button was pressed
@@ -180,11 +196,12 @@ class GomokuGame(ClientHandler):
             ypos = int(math.ceil((mouse[1]-32)/30.0))
 
             if pygame.mouse.get_pressed()[0]:
+                with open("C:/Users/marquies/Desktop/he.txt","w") as file:
+                    file.write(str(xpos)+","+str(ypos))
+                self.Send_post_req(file)
                 if(self.turn == '0'):
-                    self.screen.blit(self.orangecircle, [(xpos)*30+8, (ypos)*30+14])
                     self.player1(ypos,xpos)
                 elif(self.turn == '1'):
-                    self.screen.blit(self.bluecircle, [(xpos)*30+8, (ypos)*30+14])
                     self.player2(ypos,xpos)
                 else:
                     print("no players found")
