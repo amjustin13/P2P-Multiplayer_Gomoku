@@ -27,11 +27,7 @@ class GomokuGame(ClientHandler):
         self.initGraphics()
         self.initSound()
         self.turn = input("[0] or [1]")
-        self.me=0
-        self.didiwin=False
-        self.running=False
         self.board_array = self.CreateBoard()
-        # self.data_recieved = self.CreateBoard()
         self.temp = ["20","20"]
         if(self.turn == '0'):
             self.otherplayer = '0'
@@ -49,6 +45,7 @@ class GomokuGame(ClientHandler):
         print("Player 1:")
         if(self.board_array[row_num][col_num] != '%' and self.board_array[row_num][col_num] != '*'):
             self.board_array[row_num][col_num] = '*'
+            Check_Operating_Area(self.board_array)
         else:
             print("You cannot go there")
 
@@ -56,45 +53,139 @@ class GomokuGame(ClientHandler):
         print("player2:")
         if(self.board_array[row_num][col_num] != '%' and self.board_array[row_num][col_num] != '*'):
             self.board_array[row_num][col_num] = '%'
+            Check_Operating_Area(self.board_array)
         else:
             print("You cannot go there")
 
-#___________________________THE CLIENT________________________________________
-    def Send_get_req(self):
-       conn = http.client.HTTPConnection("149.162.139.182",6000)
-       #request command to server
-       conn.request("GET","he.txt")
+#___________________________GAME LOGIC________________________________________
+    def Check_Operating_Area(self.board_array):
+        if row_num <= 3 and col_num <= 3: #region 1
+            col_down(self.board_array)
+            row_right(self.board_array)
+            diag_down_right(self.board_array)
+        elif row_num >= 15 and col_num <= 3: #region 7
+            row_right(self.board_array)
+            col_up(self.board_array)
+            diag_up_right(self.board_array)
+        elif row_num <= 3 and col_num >= 15: #region 3
+            row_left(self.board_array)
+            col_down(self.board_array)
+            diag_down_left(self.board_array)
+        elif row_num >= 15 and col_num >= 15: #region 9
+            diag_up_left(self.board_array)
+            row_left(self.board_array)
+            col_up(self.board_array)
+        elif row_num  >= 3 and row_num <= 15 and col_num <= 3: #region 4
+            row_right(self.board_array)
+            diag_down_right(self.board_array)
+            diag_up_right(self.board_array)
+            col_up(self.board_array)
+            col_down(self.board_array)
+        elif row_num >= 3 and row_num <= 15 and col_num >= 15: #region 6
+            row_left(self.board_array)
+            col_up(self.board_array)
+            col_down(self.board_array)
+            diag_up_left(self.board_array)
+            diag_down_left(self.board_array)
+        elif col_num >= 3 and col_num <= 15 and row_num <= 3: #region 2
+            col_down(self.board_array)
+            row_right(self.board_array)
+            row_left(self.board_array)
+            diag_down_right(self.board_array)
+            diag_down_left(self.board_array)
+        elif col_num >= 3 and col_num <= 15 and row_num >= 15: #region 8
+            col_up(self.board_array)
+            row_right(self.board_array)
+            row_left(self.board_array)
+            diag_up_right(self.board_array)
+            diag_up_left(self.board_array)
+        elif col_num >= 3 and col_num <= 15 and row_num >= 3 and row_num <= 15: #region 5
+            col_up(self.board_array)
+            col_down(self.board_array)
+            row_right(self.board_array)
+            row_left(self.board_array)
+            diag_up_right(self.board_array)
+            diag_up_left(self.board_array)
+            diag_down_left(self.board_array)
+            diag_down_right(self.board_array)
 
-       #get response from server
-       response = conn.getresponse()
-       print("message value from get req: ",response.reason)
-       #print server response and data
-       print("printing response...")
-       print(int(response.status), response.reason)
+    #Check column for winner (down and up)
+    def col_down(self.board_array):
+        marker = '*'
+        marker2 = '%'
 
-       if(self.otherplayer == self.turn):
-            temp = str(response.read(),"utf-8")
-            #temp = temp.split(",")
-            print("temp: ",temp)
+        if self.board_array[row_num][col_num] == marker and self.board_array[row_num+1][col_num] == marker and self.board_array[row_num+2][col_num]==marker and self.board_array[row_num+3][col_num]==marker and self.board_array[row_num+4][col_num] == marker:
+            print(Player1, "You are a WINNER!")
 
+        elif self.board_array[row_num][col_num] == marker2 and self.board_array[row_num+1][col_num] == marker2 and self.board_array[row_num+2][col_num]==marker2 and self.board_array[row_num+3][col_num]==marker2 and self.board_array[row_num+4][col_num] == marker2:
+            print(Player2, "You are a WINNER!")
 
-    #    if(self.turn == '0'):#if you are player 1 go here
-    #        #print(self.data_recieved,"\n\n\n\n",self.board_array)
-    #        if(self.data_recieved == self.board_array):#if the board updated
-    #             #self.data_recieved = response.read()
-    #             self.board_array = self.data_recieved
-    #             self.otherplayer = response.reason
-       #
-    #    if(self.turn == '1'):#if you are player 2 go here
-    #         #print(self.data_recieved,"\n\n\n\n",self.board_array)
-    #         if(self.data_recieved != self.board_array):#if the board updated
-    #              #self.data_recieved = response.read()
-    #              self.board_array = self.data_recieved
-    #              self.otherplayer = response.reason
+    def col_up(self.board_array):
+        marker = '*'
+        marker2 = '%'
 
+        if self.board_array[row_num][col_num] == marker and self.board_array[row_num-1][col_num] == marker and self.board_array[row_num-2][col_num]==marker and self.board_array[row_num-3][col_num]==marker and self.board_array[row_num-4][col_num] == marker:
+            print(Player1, "You are a winner!")
+            #playagain()
+        if self.board_array[row_num][col_num] == marker2 and self.board_array[row_num-1][col_num] == marker2 and self.board_array[row_num-2][col_num]==marker2 and self.board_array[row_num-3][col_num]==marker2 and self.board_array[row_num-4][col_num] == marker2:
+            print(Player2, "You are a winner!")
 
-       conn.close()
+    #Check row for winner(right and left)
+    def row_right(self.board_array):
+        marker = '*'
+        marker2 = '%'
 
+        if self.board_array[row_num][col_num] == marker and self.board_array[row_num][col_num+1] == marker and self.board_array[row_num][col_num+2]==marker and self.board_array[row_num][col_num+3]==marker and self.board_array[row_num][col_num+4] == marker:
+            print(Player1, "You are a winner1!")
+        if self.board_array[row_num][col_num] == marker2 and self.board_array[row_num][col_num+1] == marker2 and self.board_array[row_num][col_num+2]==marker2 and self.board_array[row_num][col_num+3]==marker2 and self.board_array[row_num][col_num+4] == marker2:
+            print(Player2, "You are a winner1!")
+    def row_left(self.board_array):
+        marker = '*'
+        marker2 = '%'
+
+        if self.board_array[row_num][col_num] == marker and self.board_array[row_num][col_num-1] == marker and self.board_array[row_num][col_num-2]==marker and self.board_array[row_num][col_num-3]==marker and self.board_array[row_num][col_num-4] == marker:
+            print(Player1, "You are a winner1!")
+        if self.board_array[row_num][col_num] == marker2 and self.board_array[row_num][col_num-1] == marker2 and self.board_array[row_num][col_num-2]==marker2 and self.board_array[row_num][col_num-3]==marker2 and self.board_array[row_num][col_num-4] == marker2:
+            print(Player2, "You are a winner1!")
+
+    #Check (down to right) diagonal for winner
+    def diag_down_right(self.board_array):
+        marker = '*'
+        marker2 = '%'
+
+        if self.board_array[row_num][col_num] == marker and self.board_array[row_num+1][col_num+1] == marker and self.board_array[row_num+2][col_num+2]==marker and self.board_array[row_num+3][col_num+3]==marker and self.board_array[row_num+4][col_num+4] == marker:
+            print(Player1, "You are a winner2!")
+        if self.board_array[row_num][col_num] == marker2 and self.board_array[row_num+1][col_num+1] == marker2 and self.board_array[row_num+2][col_num+2]==marker2 and self.board_array[row_num+3][col_num+3]==marker2 and self.board_array[row_num+4][col_num+4] == marker2:
+            print(Player2, "You are a winner2!")
+    def diag_up_left(self.board_array):
+        marker = '*'
+        marker2 = '%'
+
+        if self.board_array[row_num][col_num] == marker and self.board_array[row_num-1][col_num-1] == marker and self.board_array[row_num-2][col_num-2]==marker and self.board_array[row_num-3][col_num-3]==marker and self.board_array[row_num-4][col_num-4] == marker:
+            print(Player1, "You are a winner2!")
+        if self.board_array[row_num][col_num] == marker2 and self.board_array[row_num-1][col_num-1] == marker2 and self.board_array[row_num-2][col_num-2]==marker2 and self.board_array[row_num-3][col_num-3]==marker2 and self.board_array[row_num-4][col_num-4] == marker2:
+            print(Player2, "You are a winner2!")
+
+    #Check (up to right and down to left) diagonal for winner
+    def diag_up_right(self.board_array):
+        marker = '*'
+        marker2 = '%'
+
+        if self.board_array[row_num][col_num] == marker and self.board_array[row_num-1][col_num+1] == marker and self.board_array[row_num-2][col_num+2]==marker and self.board_array[row_num-3][col_num+3]==marker and self.board_array[row_num-4][col_num+4] == marker:
+            print(Player1, "You are a winner2!")
+        if self.board_array[row_num][col_num] == marker2 and self.board_array[row_num-1][col_num+1] == marker2 and self.board_array[row_num-2][col_num+2]==marker2 and self.board_array[row_num-3][col_num+3]==marker2 and self.board_array[row_num-4][col_num+4] == marker2:
+            print(Player2, "You are a winner2!")
+
+    def diag_down_left(self.board_array):
+        marker = '*'
+        marker2 = '%'
+
+        if self.board_array[row_num][col_num] == marker and self.board_array[row_num+1][col_num-1] == marker and self.board_array[row_num+2][col_num-2]==marker and self.board_array[row_num+3][col_num-3]==marker and self.board_array[row_num+4][col_num-4] == marker:
+            print(Player1, "You are a winner3!")
+        if self.board_array[row_num][col_num] == marker2 and self.board_array[row_num+1][col_num-1] == marker2 and self.board_array[row_num+2][col_num-2]==marker2 and self.board_array[row_num+3][col_num-3]==marker2 and self.board_array[row_num+4][col_num-4] == marker2:
+            print(Player2, "You are a winner3!")
+
+    #___________________________THE CLIENT________________________________________
     def Send_post_req(self, temp):
         conn = http.client.HTTPConnection("149.162.139.182",6000)
         #request command to server
@@ -170,16 +261,6 @@ class GomokuGame(ClientHandler):
         global wait
         #sleep to make the game 60 fps
         self.clock.tick(60)
-        # if(self.otherplayer == '1'):#only do ths if it is not my turn
-        #     wait = wait + 1
-        #
-        #     if(wait == 30):#waits for about 3 sec
-        #         # self.Send_get_req()
-        #         wait = 0
-        # else:
-        #     pass
-
-        #clear the screen
         self.screen.fill(0)
 
         #draw the board
