@@ -13,7 +13,7 @@ class ClientHandler(BaseHTTPRequestHandler):
                 f = open(rootdir + self.path)#opens the requested file
 
                 #packing the header files together
-                self.send_response(200,message = 0)#ok
+                self.send_response(200,0)#ok
                 #specify the type you are handling
                 self.send_header("Content-type", "text/txt")
                 self.end_headers()
@@ -29,7 +29,7 @@ class ClientHandler(BaseHTTPRequestHandler):
     def do_POST(self):
         try:
             #packing the header files together
-            self.send_response(200,message = 1)#ok
+            self.send_response(200,1)#ok
             self.end_headers()
         except IOError:
             self.send_error(404,'file not found')

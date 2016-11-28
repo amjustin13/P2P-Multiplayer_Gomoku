@@ -32,7 +32,7 @@ class GomokuGame(ClientHandler):
         self.didiwin=False
         self.running=False
         self.board_array = self.CreateBoard()
-        self.data_recieved = self.CreateBoard() #str(self.CreateBoard())
+        self.data_recieved = str(self.CreateBoard())
         if(self.turn == '0'):
             self.otherplayer = '0'
         else:
@@ -41,7 +41,7 @@ class GomokuGame(ClientHandler):
     def CreateBoard(self):
         self.CreateBoardArr = []
         for x in range(0,19):
-            self.CreateBoardArr.append([0] * 19)
+            self.CreateBoardArr.append(['O'] * 19)
             with open("C:/Users/marquies/Desktop/he.txt","w") as file:
                 file.write(str(self.CreateBoardArr))
         return self.CreateBoardArr
@@ -49,8 +49,8 @@ class GomokuGame(ClientHandler):
 #___________________________PLAYER FUNCTION____________________________________
     def player1(self,row_num,col_num):
         print("Player 1:")
-        if(self.board_array[row_num][col_num] != 1 and self.board_array[row_num][col_num] != 2):
-            self.board_array[row_num][col_num] = 1
+        if(self.board_array[row_num][col_num] != '%' and self.board_array[row_num][col_num] != '*'):
+            self.board_array[row_num][col_num] = '*'
             with open("C:/Users/marquies/Desktop/he.txt","w") as file:
                 file.write(str(self.board_array))
             self.Send_post_req()
@@ -59,8 +59,8 @@ class GomokuGame(ClientHandler):
 
     def player2(self,row_num,col_num):
         print("player2:")
-        if(self.board_array[row_num][col_num] != 1 and self.board_array[row_num][col_num] != 2):
-            self.board_array[row_num][col_num] = 2
+        if(self.board_array[row_num][col_num] != '%' and self.board_array[row_num][col_num] != '*'):
+            self.board_array[row_num][col_num] = '%'
             with open("C:/Users/marquies/Desktop/he.txt","w") as file:
                 file.write(str(self.board_array))
             self.Send_post_req()
@@ -81,18 +81,21 @@ class GomokuGame(ClientHandler):
        print(int(response.status), response.reason)
 
        if(self.otherplayer == self.turn):
-           self.data_recieved = int(str(response.read(),"utf-8"))
+           temp = str(response.read(),"utf-8")
+           del self.board_array[:]
+           for i in range(len(temp)):
+               self.board_array.append(temp)
 
        if(self.turn == '0'):#if you are player 1 go here
-           print(self.data_recieved,"\n\n\n\n",self.board_array)
-           if(self.data_recieved == self.board_array):#if the board updated
+           #print(self.data_recieved,"\n\n\n\n",self.board_array)
+           if(self.data_recieved == str(self.board_array)):#if the board updated
                 #self.data_recieved = response.read()
                 self.board_array = self.data_recieved
                 self.otherplayer = response.reason
 
        if(self.turn == '1'):#if you are player 2 go here
-            print(self.data_recieved,"\n\n\n\n",self.board_array)
-            if(self.data_recieved != self.board_array):#if the board updated
+            #print(self.data_recieved,"\n\n\n\n",self.board_array)
+            if(self.data_recieved != str(self.board_array)):#if the board updated
                  #self.data_recieved = response.read()
                  self.board_array = self.data_recieved
                  self.otherplayer = response.reason
