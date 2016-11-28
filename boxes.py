@@ -26,6 +26,7 @@ class GomokuGame(ClientHandler):
         self.board = [[False for x in range(19)] for y in range(19)]
         self.initGraphics()
         self.initSound()
+        self.me = 0
         self.turn = input("[0] or [1]")
         self.board_array = self.CreateBoard()
         self.temp = ["20","20"]
@@ -45,7 +46,7 @@ class GomokuGame(ClientHandler):
         print("Player 1:")
         if(self.board_array[row_num][col_num] != '%' and self.board_array[row_num][col_num] != '*'):
             self.board_array[row_num][col_num] = '*'
-            Check_Operating_Area(self.board_array)
+            # self.Check_Operating_Area(row_num, col_num)
         else:
             print("You cannot go there")
 
@@ -53,64 +54,64 @@ class GomokuGame(ClientHandler):
         print("player2:")
         if(self.board_array[row_num][col_num] != '%' and self.board_array[row_num][col_num] != '*'):
             self.board_array[row_num][col_num] = '%'
-            Check_Operating_Area(self.board_array)
+            # self.Check_Operating_Area(row_num, col_num)
         else:
             print("You cannot go there")
 
 #___________________________GAME LOGIC________________________________________
-    def Check_Operating_Area(self.board_array):
+    def Check_Operating_Area(self, row_num, col_num):
         if row_num <= 3 and col_num <= 3: #region 1
-            col_down(self.board_array)
-            row_right(self.board_array)
-            diag_down_right(self.board_array)
+            self.col_down(row_num, col_num)
+            self.row_right(row_num, col_num)
+            self.diag_down_right(row_num, col_num)
         elif row_num >= 15 and col_num <= 3: #region 7
-            row_right(self.board_array)
-            col_up(self.board_array)
-            diag_up_right(self.board_array)
+            self.row_right(row_num, col_num)
+            self.col_up(row_num, col_num)
+            self.diag_up_right(row_num, col_num)
         elif row_num <= 3 and col_num >= 15: #region 3
-            row_left(self.board_array)
-            col_down(self.board_array)
-            diag_down_left(self.board_array)
+            self.row_left(row_num, col_num)
+            self.col_down(row_num, col_num)
+            self.diag_down_left(row_num, col_num)
         elif row_num >= 15 and col_num >= 15: #region 9
-            diag_up_left(self.board_array)
-            row_left(self.board_array)
-            col_up(self.board_array)
+            self.diag_up_left(row_num, col_num)
+            self.row_left(row_num, col_num)
+            self.col_up(row_num, col_num)
         elif row_num  >= 3 and row_num <= 15 and col_num <= 3: #region 4
-            row_right(self.board_array)
-            diag_down_right(self.board_array)
-            diag_up_right(self.board_array)
-            col_up(self.board_array)
-            col_down(self.board_array)
+            self.row_right(row_num, col_num)
+            self.diag_down_right(row_num, col_num)
+            self.diag_up_right(row_num, col_num)
+            self.col_up(row_num, col_num)
+            self.col_down(row_num, col_num)
         elif row_num >= 3 and row_num <= 15 and col_num >= 15: #region 6
-            row_left(self.board_array)
-            col_up(self.board_array)
-            col_down(self.board_array)
-            diag_up_left(self.board_array)
-            diag_down_left(self.board_array)
+            self.row_left(row_num, col_num)
+            self.col_up(row_num, col_num)
+            self.col_down(row_num, col_num)
+            self.diag_up_left(row_num, col_num)
+            self.diag_down_left(row_num, col_num)
         elif col_num >= 3 and col_num <= 15 and row_num <= 3: #region 2
-            col_down(self.board_array)
-            row_right(self.board_array)
-            row_left(self.board_array)
-            diag_down_right(self.board_array)
-            diag_down_left(self.board_array)
+            self.col_down(row_num, col_num)
+            self.row_right(row_num, col_num)
+            self.row_left(row_num, col_num)
+            self.diag_down_right(row_num, col_num)
+            self.diag_down_left(row_num, col_num)
         elif col_num >= 3 and col_num <= 15 and row_num >= 15: #region 8
-            col_up(self.board_array)
-            row_right(self.board_array)
-            row_left(self.board_array)
-            diag_up_right(self.board_array)
-            diag_up_left(self.board_array)
+            self.col_up(row_num, col_num)
+            self.row_right(row_num, col_num)
+            self.row_left(row_num, col_num)
+            self.diag_up_right(row_num, col_num)
+            self.diag_up_left(row_num, col_num)
         elif col_num >= 3 and col_num <= 15 and row_num >= 3 and row_num <= 15: #region 5
-            col_up(self.board_array)
-            col_down(self.board_array)
-            row_right(self.board_array)
-            row_left(self.board_array)
-            diag_up_right(self.board_array)
-            diag_up_left(self.board_array)
-            diag_down_left(self.board_array)
-            diag_down_right(self.board_array)
+            self.col_up(row_num, col_num)
+            self.col_down(row_num, col_num)
+            self.row_right(row_num, col_num)
+            self.row_left(row_num, col_num)
+            self.diag_up_right(row_num, col_num)
+            self.diag_up_left(row_num, col_num)
+            self.diag_down_left(row_num, col_num)
+            self.diag_down_right(row_num, col_num)
 
     #Check column for winner (down and up)
-    def col_down(self.board_array):
+    def col_down(self, row_num, col_num):
         marker = '*'
         marker2 = '%'
 
@@ -120,7 +121,7 @@ class GomokuGame(ClientHandler):
         elif self.board_array[row_num][col_num] == marker2 and self.board_array[row_num+1][col_num] == marker2 and self.board_array[row_num+2][col_num]==marker2 and self.board_array[row_num+3][col_num]==marker2 and self.board_array[row_num+4][col_num] == marker2:
             print(Player2, "You are a WINNER!")
 
-    def col_up(self.board_array):
+    def col_up(self, row_num, col_num):
         marker = '*'
         marker2 = '%'
 
@@ -131,7 +132,7 @@ class GomokuGame(ClientHandler):
             print(Player2, "You are a winner!")
 
     #Check row for winner(right and left)
-    def row_right(self.board_array):
+    def row_right(self, row_num, col_num):
         marker = '*'
         marker2 = '%'
 
@@ -139,7 +140,7 @@ class GomokuGame(ClientHandler):
             print(Player1, "You are a winner1!")
         if self.board_array[row_num][col_num] == marker2 and self.board_array[row_num][col_num+1] == marker2 and self.board_array[row_num][col_num+2]==marker2 and self.board_array[row_num][col_num+3]==marker2 and self.board_array[row_num][col_num+4] == marker2:
             print(Player2, "You are a winner1!")
-    def row_left(self.board_array):
+    def row_left(self, row_num, col_num):
         marker = '*'
         marker2 = '%'
 
@@ -149,7 +150,7 @@ class GomokuGame(ClientHandler):
             print(Player2, "You are a winner1!")
 
     #Check (down to right) diagonal for winner
-    def diag_down_right(self.board_array):
+    def diag_down_right(self, row_num, col_num):
         marker = '*'
         marker2 = '%'
 
@@ -157,7 +158,7 @@ class GomokuGame(ClientHandler):
             print(Player1, "You are a winner2!")
         if self.board_array[row_num][col_num] == marker2 and self.board_array[row_num+1][col_num+1] == marker2 and self.board_array[row_num+2][col_num+2]==marker2 and self.board_array[row_num+3][col_num+3]==marker2 and self.board_array[row_num+4][col_num+4] == marker2:
             print(Player2, "You are a winner2!")
-    def diag_up_left(self.board_array):
+    def diag_up_left(self, row_num, col_num):
         marker = '*'
         marker2 = '%'
 
@@ -167,7 +168,7 @@ class GomokuGame(ClientHandler):
             print(Player2, "You are a winner2!")
 
     #Check (up to right and down to left) diagonal for winner
-    def diag_up_right(self.board_array):
+    def diag_up_right(self, row_num, col_num):
         marker = '*'
         marker2 = '%'
 
@@ -176,7 +177,7 @@ class GomokuGame(ClientHandler):
         if self.board_array[row_num][col_num] == marker2 and self.board_array[row_num-1][col_num+1] == marker2 and self.board_array[row_num-2][col_num+2]==marker2 and self.board_array[row_num-3][col_num+3]==marker2 and self.board_array[row_num-4][col_num+4] == marker2:
             print(Player2, "You are a winner2!")
 
-    def diag_down_left(self.board_array):
+    def diag_down_left(self, row_num, col_num):
         marker = '*'
         marker2 = '%'
 
