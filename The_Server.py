@@ -11,7 +11,7 @@ class ClientHandler(BaseHTTPRequestHandler):
         try:
             if self.path.endswith('.txt'):
                 f = open(rootdir + self.path)#opens the requested file
-
+                print(f.readline())
                 #packing the header files together
                 self.send_response(200,0)#ok
                 #specify the type you are handling

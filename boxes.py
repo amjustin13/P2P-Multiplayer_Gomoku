@@ -32,7 +32,7 @@ class GomokuGame(ClientHandler):
         self.didiwin=False
         self.running=False
         self.board_array = self.CreateBoard()
-        self.data_recieved = str(self.CreateBoard())
+        self.data_recieved = self.CreateBoard()
         if(self.turn == '0'):
             self.otherplayer = '0'
         else:
@@ -40,10 +40,9 @@ class GomokuGame(ClientHandler):
 
     def CreateBoard(self):
         self.CreateBoardArr = []
+        self.temp = []
         for x in range(0,19):
             self.CreateBoardArr.append(['O'] * 19)
-            with open("C:/Users/marquies/Desktop/he.txt","w") as file:
-                file.write(str(self.CreateBoardArr))
         return self.CreateBoardArr
 
 #___________________________PLAYER FUNCTION____________________________________
@@ -52,7 +51,7 @@ class GomokuGame(ClientHandler):
         if(self.board_array[row_num][col_num] != '%' and self.board_array[row_num][col_num] != '*'):
             self.board_array[row_num][col_num] = '*'
             with open("C:/Users/marquies/Desktop/he.txt","w") as file:
-                file.write(str(self.board_array))
+                file.write(str(row_num)+str(col_num))
             self.Send_post_req()
         else:
             print("You cannot go there")
@@ -62,7 +61,7 @@ class GomokuGame(ClientHandler):
         if(self.board_array[row_num][col_num] != '%' and self.board_array[row_num][col_num] != '*'):
             self.board_array[row_num][col_num] = '%'
             with open("C:/Users/marquies/Desktop/he.txt","w") as file:
-                file.write(str(self.board_array))
+                file.write(str(row_num)+str(col_num))
             self.Send_post_req()
         else:
             print("You cannot go there")
@@ -82,20 +81,18 @@ class GomokuGame(ClientHandler):
 
        if(self.otherplayer == self.turn):
            temp = str(response.read(),"utf-8")
-           del self.board_array[:]
-           for i in range(len(temp)):
-               self.board_array.append(temp)
+           print(temp)        
 
        if(self.turn == '0'):#if you are player 1 go here
            #print(self.data_recieved,"\n\n\n\n",self.board_array)
-           if(self.data_recieved == str(self.board_array)):#if the board updated
+           if(self.data_recieved == self.board_array):#if the board updated
                 #self.data_recieved = response.read()
                 self.board_array = self.data_recieved
                 self.otherplayer = response.reason
 
        if(self.turn == '1'):#if you are player 2 go here
             #print(self.data_recieved,"\n\n\n\n",self.board_array)
-            if(self.data_recieved != str(self.board_array)):#if the board updated
+            if(self.data_recieved != self.board_array):#if the board updated
                  #self.data_recieved = response.read()
                  self.board_array = self.data_recieved
                  self.otherplayer = response.reason
