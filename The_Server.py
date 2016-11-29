@@ -4,27 +4,6 @@ import os
 class ClientHandler(BaseHTTPRequestHandler):
     #user_name = input("Please enter your username: ")#your computer name
 
-    #handle a GET request
-    def do_GET(self):
-        #file location
-        rootdir = 'C:/Users/marquies/Desktop/'
-        try:
-            if self.path.endswith('.txt'):
-                f = open(rootdir + self.path)#opens the requested file
-                print(f.readline())
-                #packing the header files together
-                self.send_response(200,0)#ok
-                #specify the type you are handling
-                self.send_header("Content-type", "text/txt")
-                self.end_headers()
-
-                #send the file contents to client
-                self.wfile.write(bytes(f.readline(),"utf-8"))
-                f.close()
-                return
-        except IOError:
-            self.send_error(404,'it is not your turn yet')
-
     #Handle a POST request
     def do_POST(self):
         rootdir = 'C:/Users/marquies/Desktop/'

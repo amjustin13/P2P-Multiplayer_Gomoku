@@ -78,24 +78,6 @@ class GomokuGame(ClientHandler):
             pass
 
 #___________________________THE CLIENT________________________________________
-    def Send_get_req(self):
-       conn = http.client.HTTPConnection("149.162.139.182",6000)
-       #request command to server
-       conn.request("GET","he.txt")
-
-       #get response from server
-       response = conn.getresponse()
-       print("message value from get req: ",response.reason)
-       #print server response and data
-       print("printing response...")
-       print(int(response.status), response.reason)
-
-       if(self.otherplayer == self.turn):
-            temp = str(response.read(),"utf-8")
-            #temp = temp.split(",")
-            print("temp: ",temp)
-       conn.close()
-
     def Send_post_req(self, temp):
         conn = http.client.HTTPConnection("149.162.138.211",6000)
         #request command to server
@@ -296,134 +278,163 @@ class GomokuGame(ClientHandler):
     def col_down(self,CreateBoard,row_num,col_num):
         marker = '*'
         marker2 = '%'
-        if(CreateBoard[row_num][col_num] == marker and
-           CreateBoard[row_num+1][col_num] == marker and
-           CreateBoard[row_num+2][col_num]==marker and
-           CreateBoard[row_num+3][col_num]==marker and
-           CreateBoard[row_num+4][col_num] == marker):
-           print(self.Player1, "You are a WINNER!")
-            #playagain()
-        elif(CreateBoard[row_num][col_num] == marker2 and
-             CreateBoard[row_num+1][col_num] == marker2 and
-             CreateBoard[row_num+2][col_num]==marker2 and
-             CreateBoard[row_num+3][col_num]==marker2 and
-             CreateBoard[row_num+4][col_num] == marker2):
-             print(self.Player2, "You are a WINNER!")
+        if(self.turn == '0'):
+            if(CreateBoard[row_num][col_num] == marker and
+               CreateBoard[row_num+1][col_num] == marker and
+               CreateBoard[row_num+2][col_num]==marker and
+               CreateBoard[row_num+3][col_num]==marker and
+               CreateBoard[row_num+4][col_num] == marker):
+               print(self.Player1, "You are a WINNER!")
+               self.didiwin = True
+        elif(self.turn == '1'):
+            if(CreateBoard[row_num][col_num] == marker2 and
+                 CreateBoard[row_num+1][col_num] == marker2 and
+                 CreateBoard[row_num+2][col_num]==marker2 and
+                 CreateBoard[row_num+3][col_num]==marker2 and
+                 CreateBoard[row_num+4][col_num] == marker2):
+                 print(self.Player2, "You are a WINNER!")
+                 self.didiwin = True
 
     def col_up(self,CreateBoard,row_num,col_num):
         marker = '*'
         marker2 = '%'
-        if(CreateBoard[row_num][col_num] == marker and
-           CreateBoard[row_num-1][col_num] == marker and
-           CreateBoard[row_num-2][col_num]==marker and
-           CreateBoard[row_num-3][col_num]==marker and
-           CreateBoard[row_num-4][col_num] == marker):
-           print(self.Player1, "You are a winner!")
-            #playagain()
-        elif(CreateBoard[row_num][col_num] == marker2 and
-           CreateBoard[row_num-1][col_num] == marker2 and
-           CreateBoard[row_num-2][col_num]==marker2 and
-           CreateBoard[row_num-3][col_num]==marker2 and
-           CreateBoard[row_num-4][col_num] == marker2):
-           print(self.Player2, "You are a winner!")
+        if(self.turn == '0'):
+            if(CreateBoard[row_num][col_num] == marker and
+               CreateBoard[row_num-1][col_num] == marker and
+               CreateBoard[row_num-2][col_num]==marker and
+               CreateBoard[row_num-3][col_num]==marker and
+               CreateBoard[row_num-4][col_num] == marker):
+               print(self.Player1, "You are a winner!")
+               self.didiwin = True
+       elif(self.turn == '1'):
+            if(CreateBoard[row_num][col_num] == marker2 and
+               CreateBoard[row_num-1][col_num] == marker2 and
+               CreateBoard[row_num-2][col_num]==marker2 and
+               CreateBoard[row_num-3][col_num]==marker2 and
+               CreateBoard[row_num-4][col_num] == marker2):
+               print(self.Player2, "You are a winner!")
+               self.didiwin = True
 
     def row_right(self,CreateBoard,row_num,col_num):
         marker = '*'
         marker2 = '%'
-        if(CreateBoard[row_num][col_num] == marker and
-           CreateBoard[row_num][col_num+1] == marker and
-           CreateBoard[row_num][col_num+2]==marker and
-           CreateBoard[row_num][col_num+3]==marker and
-           CreateBoard[row_num][col_num+4] == marker):
-           print(self.Player1, "You are a winner1!")
-        elif(CreateBoard[row_num][col_num] == marker2 and
-           CreateBoard[row_num][col_num+1] == marker2 and
-           CreateBoard[row_num][col_num+2]==marker2 and
-           CreateBoard[row_num][col_num+3]==marker2 and
-           CreateBoard[row_num][col_num+4] == marker2):
-           print(self.Player2, "You are a winner1!")
+        if(self.turn == '0'):
+            if(CreateBoard[row_num][col_num] == marker and
+               CreateBoard[row_num][col_num+1] == marker and
+               CreateBoard[row_num][col_num+2]==marker and
+               CreateBoard[row_num][col_num+3]==marker and
+               CreateBoard[row_num][col_num+4] == marker):
+               print(self.Player1, "You are a winner1!")
+               self.didiwin = True
+       elif(self.turn == '1'):
+            if(CreateBoard[row_num][col_num] == marker2 and
+               CreateBoard[row_num][col_num+1] == marker2 and
+               CreateBoard[row_num][col_num+2]==marker2 and
+               CreateBoard[row_num][col_num+3]==marker2 and
+               CreateBoard[row_num][col_num+4] == marker2):
+               print(self.Player2, "You are a winner1!")
+               self.didiwin = True
 
     def row_left(self,CreateBoard,row_num,col_num):
         marker = '*'
         marker2 = '%'
-        if(CreateBoard[row_num][col_num] == marker and
-           CreateBoard[row_num][col_num-1] == marker and
-           CreateBoard[row_num][col_num-2]==marker and
-           CreateBoard[row_num][col_num-3]==marker and
-           CreateBoard[row_num][col_num-4] == marker):
-           print(self.Player1, "You are a winner1!")
-        elif(CreateBoard[row_num][col_num] == marker2 and
-           CreateBoard[row_num][col_num-1] == marker2 and
-           CreateBoard[row_num][col_num-2]==marker2 and
-           CreateBoard[row_num][col_num-3]==marker2 and
-           CreateBoard[row_num][col_num-4] == marker2):
-           print(self.Player2, "You are a winner1!")
+        if(self.turn == '0'):
+            if(CreateBoard[row_num][col_num] == marker and
+               CreateBoard[row_num][col_num-1] == marker and
+               CreateBoard[row_num][col_num-2]==marker and
+               CreateBoard[row_num][col_num-3]==marker and
+               CreateBoard[row_num][col_num-4] == marker):
+               print(self.Player1, "You are a winner1!")
+               self.didiwin = True
+        elif(self.turn == '1'):
+            if(CreateBoard[row_num][col_num] == marker2 and
+               CreateBoard[row_num][col_num-1] == marker2 and
+               CreateBoard[row_num][col_num-2]==marker2 and
+               CreateBoard[row_num][col_num-3]==marker2 and
+               CreateBoard[row_num][col_num-4] == marker2):
+               print(self.Player2, "You are a winner1!")
+               self.didiwin = True
+
 
     def diag_down_right(self,CreateBoard,row_num,col_num):
         marker = '*'
         marker2 = '%'
-        if(CreateBoard[row_num][col_num] == marker and
-           CreateBoard[row_num+1][col_num+1] == marker and
-           CreateBoard[row_num+2][col_num+2]==marker and
-           CreateBoard[row_num+3][col_num+3]==marker and
-           CreateBoard[row_num+4][col_num+4] == marker):
-           print(self.Player1, "You are a winner2!")
-        elif(CreateBoard[row_num][col_num] == marker2 and
-             CreateBoard[row_num+1][col_num+1] == marker2 and
-             CreateBoard[row_num+2][col_num+2]==marker2 and
-             CreateBoard[row_num+3][col_num+3]==marker2 and
-             CreateBoard[row_num+4][col_num+4] == marker2):
-             print(self.Player2, "You are a winner2!")
+        if(self.turn == '0'):
+            if(CreateBoard[row_num][col_num] == marker and
+               CreateBoard[row_num+1][col_num+1] == marker and
+               CreateBoard[row_num+2][col_num+2]==marker and
+               CreateBoard[row_num+3][col_num+3]==marker and
+               CreateBoard[row_num+4][col_num+4] == marker):
+               print(self.Player1, "You are a winner2!")
+               self.didiwin = True
+       elif(self.turn == '1'):
+            if(CreateBoard[row_num][col_num] == marker2 and
+                 CreateBoard[row_num+1][col_num+1] == marker2 and
+                 CreateBoard[row_num+2][col_num+2]==marker2 and
+                 CreateBoard[row_num+3][col_num+3]==marker2 and
+                 CreateBoard[row_num+4][col_num+4] == marker2):
+                 print(self.Player2, "You are a winner2!")
+                 self.didiwin = True
 
     def diag_up_left(self,CreateBoard,row_num,col_num):
         marker = '*'
         marker2 = '%'
-        if(CreateBoard[row_num][col_num] == marker and
-           CreateBoard[row_num-1][col_num-1] == marker and
-           CreateBoard[row_num-2][col_num-2]==marker and
-           CreateBoard[row_num-3][col_num-3]==marker and
-           CreateBoard[row_num-4][col_num-4] == marker):
-           print(self.Player1, "You are a winner2!")
-        elif(CreateBoard[row_num][col_num] == marker2 and
-           CreateBoard[row_num-1][col_num-1] == marker2 and
-           CreateBoard[row_num-2][col_num-2]==marker2 and
-           CreateBoard[row_num-3][col_num-3]==marker2 and
-           CreateBoard[row_num-4][col_num-4] == marker2):
-           print(self.Player2, "You are a winner2!")
+        if(self.turn == '0'):
+            if(CreateBoard[row_num][col_num] == marker and
+               CreateBoard[row_num-1][col_num-1] == marker and
+               CreateBoard[row_num-2][col_num-2]==marker and
+               CreateBoard[row_num-3][col_num-3]==marker and
+               CreateBoard[row_num-4][col_num-4] == marker):
+               print(self.Player1, "You are a winner2!")
+               self.didiwin = True
+       elif(self.turn == '1'):
+            if(CreateBoard[row_num][col_num] == marker2 and
+               CreateBoard[row_num-1][col_num-1] == marker2 and
+               CreateBoard[row_num-2][col_num-2]==marker2 and
+               CreateBoard[row_num-3][col_num-3]==marker2 and
+               CreateBoard[row_num-4][col_num-4] == marker2):
+               print(self.Player2, "You are a winner2!")
+               self.didiwin = True
 
     def diag_up_right(self,CreateBoard,row_num,col_num):
         marker = '*'
         marker2 = '%'
-
-        if(CreateBoard[row_num][col_num] == marker and
-           CreateBoard[row_num-1][col_num+1] == marker and
-           CreateBoard[row_num-2][col_num+2]==marker and
-           CreateBoard[row_num-3][col_num+3]==marker and
-           CreateBoard[row_num-4][col_num+4] == marker):
-           print(self.Player1, "You are a winner2!")
-        if(CreateBoard[row_num][col_num] == marker2 and
-           CreateBoard[row_num-1][col_num+1] == marker2 and
-           CreateBoard[row_num-2][col_num+2]==marker2 and
-           CreateBoard[row_num-3][col_num+3]==marker2 and
-           CreateBoard[row_num-4][col_num+4] == marker2):
-           print(self.Player2, "You are a winner2!")
+        if(self.turn == '0'):
+            if(CreateBoard[row_num][col_num] == marker and
+               CreateBoard[row_num-1][col_num+1] == marker and
+               CreateBoard[row_num-2][col_num+2]==marker and
+               CreateBoard[row_num-3][col_num+3]==marker and
+               CreateBoard[row_num-4][col_num+4] == marker):
+               print(self.Player1, "You are a winner2!")
+               self.didiwin = True
+       elif(self.turn == '1'):
+            if(CreateBoard[row_num][col_num] == marker2 and
+               CreateBoard[row_num-1][col_num+1] == marker2 and
+               CreateBoard[row_num-2][col_num+2]==marker2 and
+               CreateBoard[row_num-3][col_num+3]==marker2 and
+               CreateBoard[row_num-4][col_num+4] == marker2):
+               print(self.Player2, "You are a winner2!")
+               self.didiwin = True
 
     def diag_down_left(self,CreateBoard,row_num,col_num):
         marker = '*'
         marker2 = '%'
-
-        if(CreateBoard[row_num][col_num] == marker and
-           CreateBoard[row_num+1][col_num-1] == marker and
-           CreateBoard[row_num+2][col_num-2]==marker and
-           CreateBoard[row_num+3][col_num-3]==marker and
-           CreateBoard[row_num+4][col_num-4] == marker):
-           print(self.Player1, "You are a winner3!")
-        elif(CreateBoard[row_num][col_num] == marker2 and
-           CreateBoard[row_num+1][col_num-1] == marker2 and
-           CreateBoard[row_num+2][col_num-2]==marker2 and
-           CreateBoard[row_num+3][col_num-3]==marker2 and
-           CreateBoard[row_num+4][col_num-4] == marker2):
-           print(self.Player2, "You are a winner3!")
+        if(self. turn == '0'):
+            if(CreateBoard[row_num][col_num] == marker and
+               CreateBoard[row_num+1][col_num-1] == marker and
+               CreateBoard[row_num+2][col_num-2]==marker and
+               CreateBoard[row_num+3][col_num-3]==marker and
+               CreateBoard[row_num+4][col_num-4] == marker):
+               print(self.Player1, "You are a winner3!")
+               self.didiwin = True
+       elif(self.turn == '1'):
+            if(CreateBoard[row_num][col_num] == marker2 and
+               CreateBoard[row_num+1][col_num-1] == marker2 and
+               CreateBoard[row_num+2][col_num-2]==marker2 and
+               CreateBoard[row_num+3][col_num-3]==marker2 and
+               CreateBoard[row_num+4][col_num-4] == marker2):
+               print(self.Player2, "You are a winner3!")
+               self.didiwin = True
 
 bg=GomokuGame() #__init__ is called right here
 
