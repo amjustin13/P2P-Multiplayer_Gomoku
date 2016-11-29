@@ -52,6 +52,7 @@ class GomokuGame(ClientHandler):
                 self.board_array[row_num][col_num] = '%'
             else:
                 self.board_array[row_num][col_num] = '*'
+                self.Check_Operating_Area(self.board_array,row_num,col_num)
         else:
             print("You cannot go there player 1")
 
@@ -60,8 +61,10 @@ class GomokuGame(ClientHandler):
         if(self.board_array[row_num][col_num] != '%' and self.board_array[row_num][col_num] != '*'):
             if(self.otherplayer == '1'):
                 self.board_array[row_num][col_num] = '*'
+
             else:
                 self.board_array[row_num][col_num] = '%'
+                self.Check_Operating_Area(self.board_array,row_num,col_num)
         else:
             print("You cannot go there player 2")
 
@@ -82,23 +85,6 @@ class GomokuGame(ClientHandler):
             temp = str(response.read(),"utf-8")
             #temp = temp.split(",")
             print("temp: ",temp)
-
-
-    #    if(self.turn == '0'):#if you are player 1 go here
-    #        #print(self.data_recieved,"\n\n\n\n",self.board_array)
-    #        if(self.data_recieved == self.board_array):#if the board updated
-    #             #self.data_recieved = response.read()
-    #             self.board_array = self.data_recieved
-    #             self.otherplayer = response.reason
-       #
-    #    if(self.turn == '1'):#if you are player 2 go here
-    #         #print(self.data_recieved,"\n\n\n\n",self.board_array)
-    #         if(self.data_recieved != self.board_array):#if the board updated
-    #              #self.data_recieved = response.read()
-    #              self.board_array = self.data_recieved
-    #              self.otherplayer = response.reason
-
-
        conn.close()
 
     def Send_post_req(self, temp):
@@ -258,6 +244,194 @@ class GomokuGame(ClientHandler):
         self.scorepanel=pygame.image.load("score_panel.png")
         self.greenindicator=pygame.image.load("greenindicator.png")
         self.redindicator=pygame.image.load("redindicator.png")
+
+#_______________________________CHECKING FOR A WINNER________________________
+    def Check_Operating_Area(self,CreateBoard,row_num,col_num):
+        if row_num <= 3 and col_num <= 3: #region 1
+            self.col_down(CreateBoard,row_num,col_num)
+            self.row_right(CreateBoard,row_num,col_num)
+            self.diag_down_right(CreateBoard,row_num,col_num)
+        elif row_num >= 15 and col_num <= 3: #region 7
+            self.row_right(CreateBoard,row_num,col_num)
+            self.col_up(CreateBoard,row_num,col_num)
+            self.diag_up_right(CreateBoard,row_num,col_num)
+        elif row_num <= 3 and col_num >= 15: #region 3
+            self.row_left(CreateBoard,row_num,col_num)
+            self.col_down(CreateBoard,row_num,col_num)
+            self.diag_down_left(CreateBoard,row_num,col_num)
+        elif row_num >= 15 and col_num >= 15: #region 9
+            self.diag_up_left(CreateBoard,row_num,col_num)
+            self.row_left(CreateBoard,row_num,col_num)
+            self.col_up(CreateBoard,row_num,col_num)
+        elif row_num  >= 3 and row_num <= 15 and col_num <= 3: #region 4
+            self.row_right(CreateBoard,row_num,col_num)
+            self.diag_down_right(CreateBoard,row_num,col_num)
+            self.diag_up_right(CreateBoard,row_num,col_num)
+            self.col_up(CreateBoard,row_num,col_num)
+            self.col_down(CreateBoard,row_num,col_num)
+        elif row_num >= 3 and row_num <= 15 and col_num >= 15: #region 6
+            self.row_left(CreateBoard,row_num,col_num)
+            self.col_up(CreateBoard,row_num,col_num)
+            self.col_down(CreateBoard,row_num,col_num)
+            self.diag_up_left(CreateBoard,row_num,col_num)
+            self.diag_down_left(CreateBoard,row_num,col_num)
+        elif col_num >= 3 and col_num <= 15 and row_num <= 3: #region 2
+            self.col_down(CreateBoard,row_num,col_num)
+            self.row_right(CreateBoard,row_num,col_num)
+            self.row_left(CreateBoard,row_num,col_num)
+            self.diag_down_right(CreateBoard,row_num,col_num)
+            self.diag_down_left(CreateBoard,row_num,col_num)
+        elif col_num >= 3 and col_num <= 15 and row_num >= 15: #region 8
+            self.col_up(CreateBoard,row_num,col_num)
+            self.row_right(CreateBoard,row_num,col_num)
+            self.row_left(CreateBoard,row_num,col_num)
+            self.diag_up_right(CreateBoard,row_num,col_num)
+            self.diag_up_left(CreateBoard,row_num,col_num)
+        elif col_num >= 3 and col_num <= 15 and row_num >= 3 and row_num <= 15: #region 5
+            self.col_up(CreateBoard,row_num,col_num)
+            self.col_down(CreateBoard,row_num,col_num)
+            self.row_right(CreateBoard,row_num,col_num)
+            self.row_left(CreateBoard,row_num,col_num)
+            self.diag_up_right(CreateBoard,row_num,col_num)
+            self.diag_up_left(CreateBoard,row_num,col_num)
+            self.diag_down_left(CreateBoard,row_num,col_num)
+            self.diag_down_right(CreateBoard,row_num,col_num)
+
+    def col_down(self,CreateBoard,row_num,col_num):
+        marker = '*'
+        marker2 = '%'
+
+        if(CreateBoard[row_num][col_num] == marker and
+           CreateBoard[row_num+1][col_num] == marker and
+           CreateBoard[row_num+2][col_num]==marker and
+           CreateBoard[row_num+3][col_num]==marker and
+           CreateBoard[row_num+4][col_num] == marker):
+           print(Player1, "You are a WINNER!")
+            #playagain()
+        elif(CreateBoard[row_num][col_num] == marker2 and
+             CreateBoard[row_num+1][col_num] == marker2 and
+             CreateBoard[row_num+2][col_num]==marker2 and
+             CreateBoard[row_num+3][col_num]==marker2 and
+             CreateBoard[row_num+4][col_num] == marker2):
+             print(Player2, "You are a WINNER!")
+
+    def col_up(self,CreateBoard,row_num,col_num):
+        marker = '*'
+        marker2 = '%'
+
+        if(CreateBoard[row_num][col_num] == marker and
+           CreateBoard[row_num-1][col_num] == marker and
+           CreateBoard[row_num-2][col_num]==marker and
+           CreateBoard[row_num-3][col_num]==marker and
+           CreateBoard[row_num-4][col_num] == marker):
+           print(Player1, "You are a winner!")
+            #playagain()
+        elif(CreateBoard[row_num][col_num] == marker2 and
+           CreateBoard[row_num-1][col_num] == marker2 and
+           CreateBoard[row_num-2][col_num]==marker2 and
+           CreateBoard[row_num-3][col_num]==marker2 and
+           CreateBoard[row_num-4][col_num] == marker2):
+           print(Player2, "You are a winner!")
+
+    def row_right(self,CreateBoard,row_num,col_num):
+        marker = '*'
+        marker2 = '%'
+
+        if(CreateBoard[row_num][col_num] == marker and
+           CreateBoard[row_num][col_num+1] == marker and
+           CreateBoard[row_num][col_num+2]==marker and
+           CreateBoard[row_num][col_num+3]==marker and
+           CreateBoard[row_num][col_num+4] == marker):
+           print(Player1, "You are a winner1!")
+        elif(CreateBoard[row_num][col_num] == marker2 and
+           CreateBoard[row_num][col_num+1] == marker2 and
+           CreateBoard[row_num][col_num+2]==marker2 and
+           CreateBoard[row_num][col_num+3]==marker2 and
+           CreateBoard[row_num][col_num+4] == marker2):
+           print(Player2, "You are a winner1!")
+
+    def row_left(self,CreateBoard,row_num,col_num):
+        marker = '*'
+        marker2 = '%'
+
+        if(CreateBoard[row_num][col_num] == marker and
+           CreateBoard[row_num][col_num-1] == marker and
+           CreateBoard[row_num][col_num-2]==marker and
+           CreateBoard[row_num][col_num-3]==marker and
+           CreateBoard[row_num][col_num-4] == marker):
+           print(Player1, "You are a winner1!")
+        elif(CreateBoard[row_num][col_num] == marker2 and
+           CreateBoard[row_num][col_num-1] == marker2 and
+           CreateBoard[row_num][col_num-2]==marker2 and
+           CreateBoard[row_num][col_num-3]==marker2 and
+           CreateBoard[row_num][col_num-4] == marker2):
+           print(Player2, "You are a winner1!")
+
+    def diag_down_right(self,CreateBoard,row_num,col_num):
+        marker = '*'
+        marker2 = '%'
+
+        if(CreateBoard[row_num][col_num] == marker and
+           CreateBoard[row_num+1][col_num+1] == marker and
+           CreateBoard[row_num+2][col_num+2]==marker and
+           CreateBoard[row_num+3][col_num+3]==marker and
+           CreateBoard[row_num+4][col_num+4] == marker):
+           print(Player1, "You are a winner2!")
+        elif(CreateBoard[row_num][col_num] == marker2 and
+             CreateBoard[row_num+1][col_num+1] == marker2 and
+             CreateBoard[row_num+2][col_num+2]==marker2 and
+             CreateBoard[row_num+3][col_num+3]==marker2 and
+             CreateBoard[row_num+4][col_num+4] == marker2):
+             print(Player2, "You are a winner2!")
+    def diag_up_left(self,CreateBoard,row_num,col_num):
+        marker = '*'
+        marker2 = '%'
+        if(CreateBoard[row_num][col_num] == marker and
+           CreateBoard[row_num-1][col_num-1] == marker and
+           CreateBoard[row_num-2][col_num-2]==marker and
+           CreateBoard[row_num-3][col_num-3]==marker and
+           CreateBoard[row_num-4][col_num-4] == marker):
+           print(Player1, "You are a winner2!")
+        elif(CreateBoard[row_num][col_num] == marker2 and
+           CreateBoard[row_num-1][col_num-1] == marker2 and
+           CreateBoard[row_num-2][col_num-2]==marker2 and
+           CreateBoard[row_num-3][col_num-3]==marker2 and
+           CreateBoard[row_num-4][col_num-4] == marker2):
+           print(Player2, "You are a winner2!")
+
+    def diag_up_right(self,CreateBoard,row_num,col_num):
+        marker = '*'
+        marker2 = '%'
+
+        if(CreateBoard[row_num][col_num] == marker and
+           CreateBoard[row_num-1][col_num+1] == marker and
+           CreateBoard[row_num-2][col_num+2]==marker and
+           CreateBoard[row_num-3][col_num+3]==marker and
+           CreateBoard[row_num-4][col_num+4] == marker):
+           print(Player1, "You are a winner2!")
+        if(CreateBoard[row_num][col_num] == marker2 and
+           CreateBoard[row_num-1][col_num+1] == marker2 and
+           CreateBoard[row_num-2][col_num+2]==marker2 and
+           CreateBoard[row_num-3][col_num+3]==marker2 and
+           CreateBoard[row_num-4][col_num+4] == marker2):
+           print(Player2, "You are a winner2!")
+
+    def diag_down_left(self,CreateBoard,row_num,col_num):
+        marker = '*'
+        marker2 = '%'
+
+        if(CreateBoard[row_num][col_num] == marker and
+           CreateBoard[row_num+1][col_num-1] == marker and
+           CreateBoard[row_num+2][col_num-2]==marker and
+           CreateBoard[row_num+3][col_num-3]==marker and
+           CreateBoard[row_num+4][col_num-4] == marker):
+           print(Player1, "You are a winner3!")
+        elif(CreateBoard[row_num][col_num] == marker2 and
+           CreateBoard[row_num+1][col_num-1] == marker2 and
+           CreateBoard[row_num+2][col_num-2]==marker2 and
+           CreateBoard[row_num+3][col_num-3]==marker2 and
+           CreateBoard[row_num+4][col_num-4] == marker2):
+           print(Player2, "You are a winner3!")
 
 bg=GomokuGame() #__init__ is called right here
 
