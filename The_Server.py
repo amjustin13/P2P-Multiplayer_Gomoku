@@ -27,7 +27,7 @@ class ClientHandler(BaseHTTPRequestHandler):
 
     #Handle a POST request
     def do_POST(self):
-        rootdir = 'C:/Users/marqk/Desktop/'
+        rootdir = 'C:/Users/marquies/Desktop/'
         try:
             content_length = int(self.headers['Content-Length'])
             file_content = self.rfile.read(content_length)
