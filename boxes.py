@@ -13,6 +13,10 @@ wait = 0
 class GomokuGame(ClientHandler):
     def __init__(self):
         pass
+        #Welcome Message
+        print("Welcome to Gomoku. The object of the game is to get 5 in a row. ")
+        print("You can win horizantall, vertically, or diagonally. Have fun! ")
+
         pygame.init()
         pygame.font.init()
         width, height = 580, 680
@@ -33,9 +37,14 @@ class GomokuGame(ClientHandler):
         self.board_array = self.CreateBoard()
         self.data_recieved = self.CreateBoard()
         self.temp = ["20","20"]
+
         if(self.turn == '0'):
+            self.Player1 = str(input('Player 1, Enter your name: '))
+            print('Hello',self.Player1)
             self.otherplayer = '0'
         else:
+            self.Player2 = str(input('Player 2, Enter your name: '))
+            print('Hello', self.Player2)
             self.otherplayer = '1'
 
     def CreateBoard(self):
@@ -306,14 +315,14 @@ class GomokuGame(ClientHandler):
            CreateBoard[row_num+2][col_num]==marker and
            CreateBoard[row_num+3][col_num]==marker and
            CreateBoard[row_num+4][col_num] == marker):
-           print(Player1, "You are a WINNER!")
+           print(self.Player1, "You are a WINNER!")
             #playagain()
         elif(CreateBoard[row_num][col_num] == marker2 and
              CreateBoard[row_num+1][col_num] == marker2 and
              CreateBoard[row_num+2][col_num]==marker2 and
              CreateBoard[row_num+3][col_num]==marker2 and
              CreateBoard[row_num+4][col_num] == marker2):
-             print(Player2, "You are a WINNER!")
+             print(self.Player2, "You are a WINNER!")
 
     def col_up(self,CreateBoard,row_num,col_num):
         marker = '*'
@@ -324,14 +333,14 @@ class GomokuGame(ClientHandler):
            CreateBoard[row_num-2][col_num]==marker and
            CreateBoard[row_num-3][col_num]==marker and
            CreateBoard[row_num-4][col_num] == marker):
-           print(Player1, "You are a winner!")
+           print(self.Player1, "You are a winner!")
             #playagain()
         elif(CreateBoard[row_num][col_num] == marker2 and
            CreateBoard[row_num-1][col_num] == marker2 and
            CreateBoard[row_num-2][col_num]==marker2 and
            CreateBoard[row_num-3][col_num]==marker2 and
            CreateBoard[row_num-4][col_num] == marker2):
-           print(Player2, "You are a winner!")
+           print(self.Player2, "You are a winner!")
 
     def row_right(self,CreateBoard,row_num,col_num):
         marker = '*'
@@ -342,13 +351,13 @@ class GomokuGame(ClientHandler):
            CreateBoard[row_num][col_num+2]==marker and
            CreateBoard[row_num][col_num+3]==marker and
            CreateBoard[row_num][col_num+4] == marker):
-           print(Player1, "You are a winner1!")
+           print(self.Player1, "You are a winner1!")
         elif(CreateBoard[row_num][col_num] == marker2 and
            CreateBoard[row_num][col_num+1] == marker2 and
            CreateBoard[row_num][col_num+2]==marker2 and
            CreateBoard[row_num][col_num+3]==marker2 and
            CreateBoard[row_num][col_num+4] == marker2):
-           print(Player2, "You are a winner1!")
+           print(self.Player2, "You are a winner1!")
 
     def row_left(self,CreateBoard,row_num,col_num):
         marker = '*'
@@ -359,13 +368,13 @@ class GomokuGame(ClientHandler):
            CreateBoard[row_num][col_num-2]==marker and
            CreateBoard[row_num][col_num-3]==marker and
            CreateBoard[row_num][col_num-4] == marker):
-           print(Player1, "You are a winner1!")
+           print(self.Player1, "You are a winner1!")
         elif(CreateBoard[row_num][col_num] == marker2 and
            CreateBoard[row_num][col_num-1] == marker2 and
            CreateBoard[row_num][col_num-2]==marker2 and
            CreateBoard[row_num][col_num-3]==marker2 and
            CreateBoard[row_num][col_num-4] == marker2):
-           print(Player2, "You are a winner1!")
+           print(self.Player2, "You are a winner1!")
 
     def diag_down_right(self,CreateBoard,row_num,col_num):
         marker = '*'
@@ -376,13 +385,13 @@ class GomokuGame(ClientHandler):
            CreateBoard[row_num+2][col_num+2]==marker and
            CreateBoard[row_num+3][col_num+3]==marker and
            CreateBoard[row_num+4][col_num+4] == marker):
-           print(Player1, "You are a winner2!")
+           print(self.Player1, "You are a winner2!")
         elif(CreateBoard[row_num][col_num] == marker2 and
              CreateBoard[row_num+1][col_num+1] == marker2 and
              CreateBoard[row_num+2][col_num+2]==marker2 and
              CreateBoard[row_num+3][col_num+3]==marker2 and
              CreateBoard[row_num+4][col_num+4] == marker2):
-             print(Player2, "You are a winner2!")
+             print(self.Player2, "You are a winner2!")
     def diag_up_left(self,CreateBoard,row_num,col_num):
         marker = '*'
         marker2 = '%'
@@ -391,13 +400,13 @@ class GomokuGame(ClientHandler):
            CreateBoard[row_num-2][col_num-2]==marker and
            CreateBoard[row_num-3][col_num-3]==marker and
            CreateBoard[row_num-4][col_num-4] == marker):
-           print(Player1, "You are a winner2!")
+           print(self.Player1, "You are a winner2!")
         elif(CreateBoard[row_num][col_num] == marker2 and
            CreateBoard[row_num-1][col_num-1] == marker2 and
            CreateBoard[row_num-2][col_num-2]==marker2 and
            CreateBoard[row_num-3][col_num-3]==marker2 and
            CreateBoard[row_num-4][col_num-4] == marker2):
-           print(Player2, "You are a winner2!")
+           print(self.Player2, "You are a winner2!")
 
     def diag_up_right(self,CreateBoard,row_num,col_num):
         marker = '*'
@@ -408,13 +417,13 @@ class GomokuGame(ClientHandler):
            CreateBoard[row_num-2][col_num+2]==marker and
            CreateBoard[row_num-3][col_num+3]==marker and
            CreateBoard[row_num-4][col_num+4] == marker):
-           print(Player1, "You are a winner2!")
+           print(self.Player1, "You are a winner2!")
         if(CreateBoard[row_num][col_num] == marker2 and
            CreateBoard[row_num-1][col_num+1] == marker2 and
            CreateBoard[row_num-2][col_num+2]==marker2 and
            CreateBoard[row_num-3][col_num+3]==marker2 and
            CreateBoard[row_num-4][col_num+4] == marker2):
-           print(Player2, "You are a winner2!")
+           print(self.Player2, "You are a winner2!")
 
     def diag_down_left(self,CreateBoard,row_num,col_num):
         marker = '*'
@@ -425,13 +434,13 @@ class GomokuGame(ClientHandler):
            CreateBoard[row_num+2][col_num-2]==marker and
            CreateBoard[row_num+3][col_num-3]==marker and
            CreateBoard[row_num+4][col_num-4] == marker):
-           print(Player1, "You are a winner3!")
+           print(self.Player1, "You are a winner3!")
         elif(CreateBoard[row_num][col_num] == marker2 and
            CreateBoard[row_num+1][col_num-1] == marker2 and
            CreateBoard[row_num+2][col_num-2]==marker2 and
            CreateBoard[row_num+3][col_num-3]==marker2 and
            CreateBoard[row_num+4][col_num-4] == marker2):
-           print(Player2, "You are a winner3!")
+           print(self.Player2, "You are a winner3!")
 
 bg=GomokuGame() #__init__ is called right here
 
