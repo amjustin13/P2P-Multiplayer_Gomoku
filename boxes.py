@@ -102,7 +102,7 @@ class GomokuGame(ClientHandler):
        conn.close()
 
     def Send_post_req(self, temp):
-        conn = http.client.HTTPConnection("140.182.22.241",6000)
+        conn = http.client.HTTPConnection("149.162.138.211",6000)
         #request command to server
         conn.request("POST","he.txt", temp)
 
@@ -160,7 +160,8 @@ class GomokuGame(ClientHandler):
                 self.player2(int(temp[1]), int(temp[0]))
 
             if(self.otherplayer == '1' and self.turn == '0'):#if player 1 cannot make a move
-                if(self.board_array[int(temp[0])][int(temp[1])] == '%' and self.data_recieved[int(temp[0])][int(temp[1])] == 'O'):
+                print(self.board_array[int(temp[1])][int(temp[0])])
+                if(self.board_array[int(temp[1])][int(temp[0])] == '%' and self.data_recieved[int(temp[0])][int(temp[1])] == 'O'):
                     self.otherplayer = '0'
                     self.data_recieved[int(temp[0])][int(temp[1])] = '1'
                     temp = 0
@@ -169,8 +170,6 @@ class GomokuGame(ClientHandler):
                     self.otherplayer = '0'
                     self.data_recieved[int(temp[1])][int(temp[0])] = '1'
                     temp = 0
-
-
 
 
     def drawPlayerBoard(self):
