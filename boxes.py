@@ -4,11 +4,14 @@ from http.client import HTTPConnection
 import http.client
 from The_Server import ClientHandler
 import os
+import time
 
 global board_array
 global wait
+global playonce
 
 wait = 0
+playonce = 1
 
 class GomokuGame(ClientHandler):
     def __init__(self):
@@ -33,6 +36,7 @@ class GomokuGame(ClientHandler):
         self.turn = input("[0] or [1]")
         self.me=0
         self.didiwin=False
+        self.didilose=False
         self.running=False
         self.board_array = self.CreateBoard()
         self.data_recieved = self.CreateBoard()
@@ -79,7 +83,7 @@ class GomokuGame(ClientHandler):
 
 #___________________________THE CLIENT________________________________________
     def Send_post_req(self, temp):
-        conn = http.client.HTTPConnection("149.162.138.211",6000)
+        conn = http.client.HTTPConnection("140.182.23.92",6000)
         #request command to server
         conn.request("POST","he.txt", temp)
 
@@ -99,7 +103,7 @@ class GomokuGame(ClientHandler):
         for x in range(19):
             for y in range(19):
                     self.screen.blit(self.bluesquare, [(x)*30, (y)*30+5])
-    def drawHUD(self):
+    def drawTurn(self):
         #draw the background for the bottom and draw text:
         self.screen.blit(self.scorepanel, [0, 580])
 
@@ -109,18 +113,10 @@ class GomokuGame(ClientHandler):
         myfont20 = pygame.font.SysFont(None, 20)
 
         label = myfont32.render("Your Turn:", 1, (255,255,255))
-        scoreme = myfont64.render(str(self.me), 1, (255,255,255))
-        scoreother = myfont64.render(str(self.otherplayer), 1, (255,255,255))
-        scoretextme = myfont20.render("You", 1, (255,255,255))
-        scoretextother = myfont20.render("Other Player", 1, (255,255,255))
 
         #draw surface
         self.screen.blit(label, (10, 590))
-        self.screen.blit(self.greenindicator if self.turn else self.redindicator, (130, 585))
-        self.screen.blit(scoretextme, (10, 625))
-        self.screen.blit(scoreme, (10, 635))
-        self.screen.blit(scoretextother, (280, 625))
-        self.screen.blit(scoreother, (340, 635))
+        self.screen.blit(self.greenindicator if self.otherplayer =="0" else self.redindicator, (130, 585))
 
     def updateBoard(self):
         if os.stat("C:/Users/marquies/Desktop/he.txt").st_size != 0:
@@ -130,24 +126,28 @@ class GomokuGame(ClientHandler):
             temp = temp[1].split("'")
             temp = temp[1].split(",")
 
-            if(self.turn == '0'):
+            if(self.turn == '0' and self.didiwin == False and int(temp[0]) < 99):
                 self.player1(int(temp[1]), int(temp[0]))
-            elif(self.turn == '1'):
+            elif(self.turn == '1' and self.didiwin == False and int(temp[0]) < 99):
                 self.player2(int(temp[1]), int(temp[0]))
             #if player 1 cannot make a move,then check for turn
-            if(self.otherplayer == '1' and self.turn == '0'):
+            if(self.otherplayer == '1' and self.turn == '0' and self.didiwin == False and int(temp[0]) < 99):
                 if(self.board_array[int(temp[1])][int(temp[0])] == '%' and
-                   self.data_recieved[int(temp[0])][int(temp[1])] == 'O'):
-                   self.otherplayer = '0'
-                   self.data_recieved[int(temp[0])][int(temp[1])] = '1'
-                   temp = 0
-           #if player 2 cannot make a move, then chekc for turn
-            elif(self.otherplayer =='1' and self.turn == '1'):
+                    self.data_recieved[int(temp[0])][int(temp[1])] == 'O'):
+                    self.otherplayer = '0'
+                    self.data_recieved[int(temp[0])][int(temp[1])] = '1'
+            elif(int(temp[0]) == 99 and self.turn == '0'):
+                self.didilose = True
+
+            #if player 2 cannot make a move, then chekc for turn
+            elif(self.otherplayer =='1' and self.turn == '1' and self.didiwin == False and int(temp[0]) < 99):
                 if(self.board_array[int(temp[1])][int(temp[0])] == '*' and
-                   self.data_recieved[int(temp[1])][int(temp[0])] == 'O'):
-                   self.otherplayer = '0'
-                   self.data_recieved[int(temp[1])][int(temp[0])] = '1'
-                   temp = 0
+                    self.data_recieved[int(temp[1])][int(temp[0])] == 'O'):
+                    self.otherplayer = '0'
+                    self.data_recieved[int(temp[1])][int(temp[0])] = '1'
+            elif(int(temp[0]) == 99 and self.turn == '1'):
+                self.didilose = True
+            print(self.didilose)
 
     def drawPlayerBoard(self):
         for x in range(19):
@@ -157,7 +157,7 @@ class GomokuGame(ClientHandler):
                 elif self.board_array[y][x] == '%':
                     self.screen.blit(self.bluecircle, [(x)*30+8, (y)*30+14])
     def update(self):
-        global wait
+        global playonce
         #sleep to make the game 60 fps
         self.clock.tick(60)
 
@@ -166,9 +166,21 @@ class GomokuGame(ClientHandler):
 
         #draw the board
         self.drawBoard()
-        self.drawHUD()
+        self.drawTurn()
         self.updateBoard()
         self.drawPlayerBoard()
+
+        if self.didiwin == True:
+            self.screen.blit(self.winPicture, [0,0])
+            if(playonce == 1):
+                self.winSound.play()
+                playonce = 0
+        elif self.didilose == True:
+            self.screen.blit(self.losePicture,[0,0])
+            self.otherplayer = '1'
+            if(playonce == 1):
+                self.winSound.play()
+                playonce = 0
 
         for event in pygame.event.get():
             #quit if the quit button was pressed
@@ -188,11 +200,24 @@ class GomokuGame(ClientHandler):
 
                 if(self.turn == '0'):
                     self.player1(ypos,xpos)
+                    if(self.didiwin == True):
+                        self.me = 1
+                        self.didiwin = False
                     self.Send_post_req(colrowStr)
+                    if(self.me == 1):
+                         self.didiwin = True
+                         self.Send_post_req('99'+','+'99')
                     self.otherplayer = '1'
                 elif(self.turn == '1'):
+                    print(ypos,xpos)
                     self.player2(ypos,xpos)
+                    if(self.didiwin == True):
+                        self.me = 1
+                        self.didiwin = False
                     self.Send_post_req(colrowStr)
+                    if(self.me == 1):
+                         self.didiwin = True
+                         self.Send_post_req('99'+','+'99')
                     self.otherplayer = '1'
                 else:
                     print("no players found")
@@ -208,17 +233,16 @@ class GomokuGame(ClientHandler):
     # --------------------------------
     def initSound(self):
         pygame.mixer.music.load("music.wav")
-        self.winSound = pygame.mixer.Sound('win.wav')
-        self.loseSound = pygame.mixer.Sound('lose.wav')
+        self.winSound = pygame.mixer.Sound('Cheering 2-SoundBible.com-457490617.wav')
         self.placeSound = pygame.mixer.Sound('place.wav')
         pygame.mixer.music.play()
 
     def initGraphics(self):
         self.bluesquare=pygame.image.load("square-frame-png-25171.png")
-        self.blackcircle=pygame.image.load("blackcircle.png")
+        self.winPicture=pygame.image.load("youwin.png")
+        self.losePicture=pygame.image.load("gameover.png")
         self.bluecircle=pygame.image.load("bluecircle.png")
         self.orangecircle=pygame.image.load("orangecircle.png")
-        self.redcircle=pygame.image.load("redcircle.png")
         self.scorepanel=pygame.image.load("score_panel.png")
         self.greenindicator=pygame.image.load("greenindicator.png")
         self.redindicator=pygame.image.load("redindicator.png")
@@ -294,7 +318,6 @@ class GomokuGame(ClientHandler):
                  CreateBoard[row_num+4][col_num] == marker2):
                  print(self.Player2, "You are a WINNER!")
                  self.didiwin = True
-
     def col_up(self,CreateBoard,row_num,col_num):
         marker = '*'
         marker2 = '%'
@@ -306,7 +329,7 @@ class GomokuGame(ClientHandler):
                CreateBoard[row_num-4][col_num] == marker):
                print(self.Player1, "You are a winner!")
                self.didiwin = True
-       elif(self.turn == '1'):
+        elif(self.turn == '1'):
             if(CreateBoard[row_num][col_num] == marker2 and
                CreateBoard[row_num-1][col_num] == marker2 and
                CreateBoard[row_num-2][col_num]==marker2 and
@@ -314,7 +337,6 @@ class GomokuGame(ClientHandler):
                CreateBoard[row_num-4][col_num] == marker2):
                print(self.Player2, "You are a winner!")
                self.didiwin = True
-
     def row_right(self,CreateBoard,row_num,col_num):
         marker = '*'
         marker2 = '%'
@@ -326,7 +348,7 @@ class GomokuGame(ClientHandler):
                CreateBoard[row_num][col_num+4] == marker):
                print(self.Player1, "You are a winner1!")
                self.didiwin = True
-       elif(self.turn == '1'):
+        elif(self.turn == '1'):
             if(CreateBoard[row_num][col_num] == marker2 and
                CreateBoard[row_num][col_num+1] == marker2 and
                CreateBoard[row_num][col_num+2]==marker2 and
@@ -334,7 +356,6 @@ class GomokuGame(ClientHandler):
                CreateBoard[row_num][col_num+4] == marker2):
                print(self.Player2, "You are a winner1!")
                self.didiwin = True
-
     def row_left(self,CreateBoard,row_num,col_num):
         marker = '*'
         marker2 = '%'
@@ -354,8 +375,6 @@ class GomokuGame(ClientHandler):
                CreateBoard[row_num][col_num-4] == marker2):
                print(self.Player2, "You are a winner1!")
                self.didiwin = True
-
-
     def diag_down_right(self,CreateBoard,row_num,col_num):
         marker = '*'
         marker2 = '%'
@@ -367,7 +386,7 @@ class GomokuGame(ClientHandler):
                CreateBoard[row_num+4][col_num+4] == marker):
                print(self.Player1, "You are a winner2!")
                self.didiwin = True
-       elif(self.turn == '1'):
+        elif(self.turn == '1'):
             if(CreateBoard[row_num][col_num] == marker2 and
                  CreateBoard[row_num+1][col_num+1] == marker2 and
                  CreateBoard[row_num+2][col_num+2]==marker2 and
@@ -375,7 +394,6 @@ class GomokuGame(ClientHandler):
                  CreateBoard[row_num+4][col_num+4] == marker2):
                  print(self.Player2, "You are a winner2!")
                  self.didiwin = True
-
     def diag_up_left(self,CreateBoard,row_num,col_num):
         marker = '*'
         marker2 = '%'
@@ -387,7 +405,7 @@ class GomokuGame(ClientHandler):
                CreateBoard[row_num-4][col_num-4] == marker):
                print(self.Player1, "You are a winner2!")
                self.didiwin = True
-       elif(self.turn == '1'):
+        elif(self.turn == '1'):
             if(CreateBoard[row_num][col_num] == marker2 and
                CreateBoard[row_num-1][col_num-1] == marker2 and
                CreateBoard[row_num-2][col_num-2]==marker2 and
@@ -395,7 +413,6 @@ class GomokuGame(ClientHandler):
                CreateBoard[row_num-4][col_num-4] == marker2):
                print(self.Player2, "You are a winner2!")
                self.didiwin = True
-
     def diag_up_right(self,CreateBoard,row_num,col_num):
         marker = '*'
         marker2 = '%'
@@ -407,7 +424,7 @@ class GomokuGame(ClientHandler):
                CreateBoard[row_num-4][col_num+4] == marker):
                print(self.Player1, "You are a winner2!")
                self.didiwin = True
-       elif(self.turn == '1'):
+        elif(self.turn == '1'):
             if(CreateBoard[row_num][col_num] == marker2 and
                CreateBoard[row_num-1][col_num+1] == marker2 and
                CreateBoard[row_num-2][col_num+2]==marker2 and
@@ -415,7 +432,6 @@ class GomokuGame(ClientHandler):
                CreateBoard[row_num-4][col_num+4] == marker2):
                print(self.Player2, "You are a winner2!")
                self.didiwin = True
-
     def diag_down_left(self,CreateBoard,row_num,col_num):
         marker = '*'
         marker2 = '%'
@@ -427,7 +443,7 @@ class GomokuGame(ClientHandler):
                CreateBoard[row_num+4][col_num-4] == marker):
                print(self.Player1, "You are a winner3!")
                self.didiwin = True
-       elif(self.turn == '1'):
+        elif(self.turn == '1'):
             if(CreateBoard[row_num][col_num] == marker2 and
                CreateBoard[row_num+1][col_num-1] == marker2 and
                CreateBoard[row_num+2][col_num-2]==marker2 and
@@ -436,7 +452,7 @@ class GomokuGame(ClientHandler):
                print(self.Player2, "You are a winner3!")
                self.didiwin = True
 
-bg=GomokuGame() #__init__ is called right here
+game=GomokuGame() #__init__ is called right here
 
-while 1:
-    bg.update()
+while (1):
+    game.update()

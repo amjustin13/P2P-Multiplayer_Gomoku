@@ -27,7 +27,7 @@ class ClientHandler(BaseHTTPRequestHandler):
 #this is how you create and run the server
 def run(server_class = HTTPServer, handler_class = ClientHandler):
     print("http server is starting...")
-    server_address = ('140.182.22.241',6000)#connect to this location
+    server_address = ('140.182.23.92',6000)#connect to this location
     httpd = server_class(server_address,handler_class)
     print("http is running...")
     httpd.serve_forever()
